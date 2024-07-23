@@ -6,7 +6,6 @@
     font-family: 'Poppins', sans-serif;
 }
 
-
 /* NAVBAR */
 a {
     color: #FFF;
@@ -41,7 +40,7 @@ nav {
     color: #FFF;
 }
 
-/* CONTEUDO */
+/* PRINCIPAL */
 main {
     background: 
         linear-gradient(rgba(35, 35, 46, 0.7), rgba(35, 35, 46, 0.5)),
@@ -51,4 +50,106 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* FORMULARIO */
+.container {
+    background-color: #FAFAFA;
+    border-radius: 14px;
+    margin: 14px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    max-height: 85vh; /* Define a altura máxima */
+}
+
+.form-header {
+    background: linear-gradient(120deg, #3acbf0 0%, #8bb0ff 100%);
+    padding: 24px;
+    color: #FFF;
+    box-sizing: border-box;
+}
+
+.form-header img {
+    width: 150px;
+    margin: 0 auto 10px auto;
+    display: block;
+}
+
+.form-header h2 {
+    font-size: 24px;
+    text-align: center;
+}
+
+.form-wrapper {
+    max-height: calc(85vh - 150px); /* Altura máxima menos a altura do header */
+    overflow-y: auto; /* Adiciona a barra de rolagem vertical */
+    padding-left: 10px; /* Compensa a largura da barra de rolagem */
+    padding-bottom: 50px;
+}
+
+.form {
+    padding: 0 18px;
+}
+
+.form-content {
+    margin-bottom: 8px;
+    padding: 18px;
+    position: relative;
+}
+
+.form-content label {
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+.form-content input,
+.form-content textarea,
+.form-content select {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    padding: 8px;
+    border: 2px solid #DFDFDF;
+}
+
+.form-content a {
+    position: absolute;
+    bottom: -8px;
+    color: #23232e;
+    /* visibility: hidden; */
+}
+
+.form button {
+    background-color: #00c3ff;
+    color: #FFF;
+    width: 95%;
+    height: 40px;
+    border-radius: 10px;
+    border: 0;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+/* ESTILOS DA BARRA DE ROLAGEM */
+.form-wrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+.form-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.form-wrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.form-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
-    <title>Pokemon Card - Scrapper</title>
+    <title>Pokemon Card - Scraper</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,18 +14,71 @@
 <body>
     <header>
         <nav>
-            <a class="logo" href="/">Pokemon Card - Scrapper</a>
+            <a class="logo" href="/">Pokemon Card - Scraper</a>
             <ul class="nav-list">
                 <li>Trabalho - Sistemas Distribuídos</li>
             </ul>
         </nav>
     </header>
     <main>
-        <div>
-            <form action="scrapper.php" method="post">
-                <input type="text" name="url" placeholder="Enter URL">
-                <button type="submit">Scrap</button>
-            </form>
+        <div class="container">
+            <section class="form-header">
+                <img src="assets/images/pokemon_tcg.png" alt="Pokemon Trading Card Game logo">
+                <h2>Pesquise os dados da Carta</h2>
+            </section>
+
+            <div class="form-wrapper">
+                <form id="form" class="form" action="scrapper.php" method="post">
+                    <div class="form-content">
+                        <label for="name">Nome da Carta</label>
+                        <input 
+                            type="text"
+                            name="name"
+                            placeholder="Digite o nome da carta"
+                        />
+                        <a href="">Aqui vai a mensagem de erro...</a>
+                    </div>
+    
+                    <div class="form-content">
+                        <label for="pre-evolution">Evolui de:</label>
+                        <input 
+                            type="text"
+                            name="pre-evolution"
+                            placeholder="Digite a pré-evolução da carta"
+                        />
+                        <a href="">Aqui vai a mensagem de erro...</a>
+                    </div>
+    
+                    <div class="form-content">
+                        <label for="type">Tipo da Carta</label>
+                        <select name="type" id="type">
+                            <option value="fire">Fogo</option>
+                            <option value="water">Água</option>
+                            <option value="grass">Grama</option>
+                            <option value="electric">Elétrico</option>
+                            <option value="psychic">Psíquico</option>
+                            <option value="fighting">Lutador</option>
+                            <option value="darkness">Noturno</option>
+                            <option value="metal">Metálico</option>
+                            <option value="fairy">Fada</option>
+                            <option value="dragon">Dragão</option>
+                        </select>
+                    </div>
+    
+                    <div class="form-content">
+                        <label for="text">Texto da Carta</label>
+                        <textarea 
+                            name="text" 
+                            id="text"
+                            placeholder="Digite o texto da carta"
+                            rows="4"
+                        ></textarea>
+                        <a href="">Aqui vai a mensagem de erro...</a>
+                    </div>
+    
+                    <button type="submit">Pesquisar</button>
+                </form>
+            </div>
         </div>
     </main>
 </body>
