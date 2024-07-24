@@ -43,13 +43,19 @@ nav {
 /* PRINCIPAL */
 main {
     background: 
-        linear-gradient(rgba(35, 35, 46, 0.7), rgba(35, 35, 46, 0.5)),
-        url("../images/bg.png") no-repeat center center;
+        linear-gradient(rgba(35, 35, 46, 0.7), rgba(35, 35, 46, 0.7)),
+        url("../images/bg.jpg") no-repeat center center;
     background-size: cover;
     height: 92vh;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* IMAGEM */
+.image-container img {
+    max-width: 500px;
+    width: 100%;
 }
 
 /* FORMULARIO */
@@ -61,11 +67,11 @@ main {
     width: 100%;
     box-shadow: 0 5px 8px rgba(0, 0, 0, 0.5);
     overflow: hidden;
-    max-height: 85vh; /* Define a altura máxima */
+    max-height: 85vh;
 }
 
 .form-header {
-    background: linear-gradient(120deg, #3acbf0 0%, #8bb0ff 100%);
+    background: linear-gradient(120deg, #3acbf0 0%, #0A7090 100%);
     padding: 24px;
     color: #FFF;
     box-sizing: border-box;
@@ -90,12 +96,12 @@ main {
 }
 
 .form {
+    margin-top: 15px;
     padding: 0 18px;
 }
 
 .form-content {
-    margin-bottom: 8px;
-    padding: 18px;
+    margin-bottom: 25px;
     position: relative;
 }
 
@@ -114,11 +120,11 @@ main {
     border: 2px solid #DFDFDF;
 }
 
-.form-content a {
+.form-content p {
     position: absolute;
-    bottom: -8px;
+    bottom: -22px;
     color: #23232e;
-    /* visibility: hidden; */
+    display: none;
 }
 
 .form button {
@@ -130,9 +136,20 @@ main {
     border: 0;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 30px;
+    margin-top: 35px;
     margin-left: auto;
     margin-right: auto;
+    display: block;
+}
+
+.form-content.error input,
+.form-content.error textarea,
+.form-content.error select {
+    border-color: #ff3b25;
+}
+
+.form-content.error p {
+    color: #ff3b25;
     display: block;
 }
 
@@ -146,10 +163,10 @@ main {
 }
 
 .form-wrapper::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #0A7090;
     border-radius: 10px;
 }
 
 .form-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #00c3ff;
 }

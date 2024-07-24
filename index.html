@@ -21,6 +21,11 @@
         </nav>
     </header>
     <main>
+
+        <div class="image-container">
+            <img src="assets/images/pikachu.png" alt="">
+        </div>
+
         <div class="container">
             <section class="form-header">
                 <img src="assets/images/pokemon_tcg.png" alt="Pokemon Trading Card Game logo">
@@ -28,7 +33,7 @@
             </section>
 
             <div class="form-wrapper">
-                <form id="form" class="form" action="scrapper.php" method="post">
+                <form id="form" class="form" action="">
                     <div class="form-content">
                         <label for="name">Nome da Carta</label>
                         <input 
@@ -36,7 +41,7 @@
                             name="name"
                             placeholder="Digite o nome da carta"
                         />
-                        <a href="">Aqui vai a mensagem de erro...</a>
+                        <p>Aqui vai a mensagem de erro...</p>
                     </div>
     
                     <div class="form-content">
@@ -46,12 +51,13 @@
                             name="pre-evolution"
                             placeholder="Digite a pré-evolução da carta"
                         />
-                        <a href="">Aqui vai a mensagem de erro...</a>
+                        <p>Aqui vai a mensagem de erro...</p>
                     </div>
     
                     <div class="form-content">
                         <label for="type">Tipo da Carta</label>
                         <select name="type" id="type">
+                            <option value="" disabled selected>Selecione o tipo</option>
                             <option value="fire">Fogo</option>
                             <option value="water">Água</option>
                             <option value="grass">Grama</option>
@@ -60,9 +66,11 @@
                             <option value="fighting">Lutador</option>
                             <option value="darkness">Noturno</option>
                             <option value="metal">Metálico</option>
+                            <option value="colorless">Normal</option>
                             <option value="fairy">Fada</option>
                             <option value="dragon">Dragão</option>
                         </select>
+                        <p>Aqui vai a mensagem de erro...</p>
                     </div>
     
                     <div class="form-content">
@@ -73,7 +81,7 @@
                             placeholder="Digite o texto da carta"
                             rows="4"
                         ></textarea>
-                        <a href="">Aqui vai a mensagem de erro...</a>
+                        <p>Aqui vai a mensagem de erro...</p>
                     </div>
     
                     <button type="submit">Pesquisar</button>
@@ -81,5 +89,7 @@
             </div>
         </div>
     </main>
+
+    <script src="script.js"></script>
 </body>
 </html>
