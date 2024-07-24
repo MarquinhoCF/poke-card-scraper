@@ -131,18 +131,28 @@ function checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, userna
     }
 
     if (anyChecked) {
-        if (emailCheckbox.checked && emailValue === '') {
-            setErrorFor(email, 'E-mail não pode estar em branco', 'form-content-notifications error');
-            isInvalid = false;
-        } else {
-            setSuccessFor(email, 'form-content-notifications');
+        if (emailCheckbox.checked) {
+            if (emailValue === '') {
+                setErrorFor(email, 'E-mail não pode estar em branco', 'form-content-notifications error');
+                isInvalid = false;
+            } else if (!isValidEmail(emailValue)) {
+                setErrorFor(email, 'E-mail inválido, tente digitar novamente', 'form-content-notifications error');
+                isInvalid = false;
+            } else {
+                setSuccessFor(email, 'form-content-notifications');
+            }
         }
 
-        if (smsCheckbox.checked && phoneValue === '') {
-            setErrorFor(phone, 'Telefone não pode estar em branco', 'form-content-notifications error');
-            isInvalid = false;
-        } else {
-            setSuccessFor(phone, 'form-content-notifications');
+        if (smsCheckbox.checked) {
+            if (phoneValue === '') {
+                setErrorFor(phone, 'Telefone não pode estar em branco', 'form-content-notifications error');
+                isInvalid = false;
+            } else if (!isValidPhone(phoneValue)) {
+                setErrorFor(phone, 'Telefone inválido, tente digitar novamente', 'form-content-notifications error');
+                isInvalid = false;
+            } else {
+                setSuccessFor(phone, 'form-content-notifications');
+            }
         }
 
         if (telegramCheckbox.checked && telegramValue === '') {
@@ -154,6 +164,27 @@ function checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, userna
     }
 
     return isInvalid;
+}
+
+
+// Função para validar email
+function isValidEmail(email) {
+    // Email deve conter @ e pelo menos um ponto
+    // Não pode conter espaços
+    // Deve conter pelo menos um caractere antes e depois do @
+    // Deve conter pelo menos um caractere antes e depois do ponto
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Função para validar telefone
+function isValidPhone(phone) {
+    // Telefone pode ter de 10 a 15 dígitos
+    // Pode conter caracteres especiais como + e -
+    // Não pode conter espaços
+    // Não pode conter letras
+    const phoneRegex = /^\d{10,15}$/;
+    return phoneRegex.test(phone);
 }
 
 // Altera o estilo para representar um valor inválido
