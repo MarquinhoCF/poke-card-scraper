@@ -20,11 +20,6 @@ const telegramCheckbox = document.getElementById('telegram-checkbox');
 // Elemento que envolve os campos que definem os métodos de notificação
 const notificationFields = document.getElementById('notification-fields');
 
-// Campos dos métodos de notificação
-const emailField = document.getElementById('email-field');
-const smsField = document.getElementById('sms-field');
-const telegramField = document.getElementById('telegram-field');
-
 // Evento para atualizar os campos de notificação quando as checkboxes são marcadas
 document.addEventListener('DOMContentLoaded', () => {
     emailCheckbox.addEventListener('change', updateNotificationFields);
@@ -40,9 +35,21 @@ function updateNotificationFields() {
 
     notificationFields.classList.toggle('show', anyChecked);
 
-    emailField.classList.toggle('show', emailCheckbox.checked);
-    smsField.classList.toggle('show', smsCheckbox.checked);
-    telegramField.classList.toggle('show', telegramCheckbox.checked);
+    toggleValue(emailCheckbox, email);
+    toggleValue(smsCheckbox, phone);
+    toggleValue(telegramCheckbox, telegram);
+}
+
+// Mostra e esconde o input conforme valor da checkbox e cuida para resetar o input
+function toggleValue(checkInput, formInput) {
+    let checked = checkInput.checked;
+    let field = formInput.parentElement;
+    field.classList.toggle('show', checked);
+    
+    if (!checked) {
+        formInput.value = '';
+        setSuccessFor(formInput, 'form-content-notifications');
+    }
 }
 
 // Evento para checar os valores do input
