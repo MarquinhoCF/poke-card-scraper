@@ -100,6 +100,12 @@ main {
     padding: 0 18px;
 }
 
+.form h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #0A7090;
+}
+
 .form-content {
     margin-bottom: 25px;
     position: relative;
@@ -150,6 +156,74 @@ main {
 
 .form-content.error p {
     color: #ff3b25;
+    display: block;
+}
+
+/* Divider */
+.divider {
+    border-top: 4px solid #0A7090;
+    border-radius: 20px;
+    margin: 20px 0;
+}
+
+/* Estilo para as checkboxes */
+.form-checkboxes {
+    display: block;
+    margin-bottom: 15px;
+    display: relative;
+}
+
+.checkbox input {
+    margin-right: 5px;
+}
+
+.form-checkboxes p {
+    bottom: -22px;
+    color: #23232e;
+    display: none;
+}
+
+.form-checkboxes.error p {
+    color: #ff3b25;
+    display: block;
+}
+
+/* Estilo para o campo de notificação */
+#notification-fields {
+    display: none;
+}
+
+#notification-fields.show {
+    display: block;
+}
+
+.form-content-notifications {
+    margin-bottom: 25px;
+    position: relative;
+    display: none;
+}
+
+.form-content-notifications label {
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+.form-content-notifications input {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    padding: 8px;
+    border: 2px solid #DFDFDF;
+}
+
+.form-content-notifications p {
+    position: absolute;
+    bottom: -22px;
+    color: #23232e;
+    display: none;
+}
+
+.form-content-notifications.show {
     display: block;
 }
 

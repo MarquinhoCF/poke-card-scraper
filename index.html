@@ -29,16 +29,19 @@
         <div class="container">
             <section class="form-header">
                 <img src="assets/images/pokemon_tcg.png" alt="Pokemon Trading Card Game logo">
-                <h2>Pesquise os dados da Carta</h2>
+                <h2>Faça o scrap dos dados da Carta</h2>
             </section>
 
             <div class="form-wrapper">
                 <form id="form" class="form" action="">
+                    <h3>Preencha os dados da carta:</h3>
+
                     <div class="form-content">
                         <label for="name">Nome da Carta</label>
                         <input 
                             type="text"
                             name="name"
+                            id="name"
                             placeholder="Digite o nome da carta"
                         />
                         <p>Aqui vai a mensagem de erro...</p>
@@ -49,6 +52,7 @@
                         <input 
                             type="text"
                             name="pre-evolution"
+                            id="pre-evolution"
                             placeholder="Digite a pré-evolução da carta"
                         />
                         <p>Aqui vai a mensagem de erro...</p>
@@ -83,6 +87,53 @@
                         ></textarea>
                         <p>Aqui vai a mensagem de erro...</p>
                     </div>
+
+                    <div class="divider"></div>
+
+                    <div class="form-content">
+                        <h3>Informações do Usuário:</h3>
+
+                        <label for="username">Nome do Usuário</label>
+                        <input 
+                            type="text"
+                            name="username"
+                            id="username"
+                            placeholder="Digite seu nome de usuário"
+                        />
+                        <p>Aqui vai a mensagem de erro...</p>
+                    </div>
+                    
+                    <div class="form-checkboxes">
+                        <label>Notificações</label>
+                        <div class="checkbox">
+                            <input type="checkbox" id="email-checkbox" name="notification-checkbox" value="email">
+                            <label for="email-checkbox">Email</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="sms-checkbox" name="notification-checkbox" value="sms">
+                            <label for="sms-checkbox">SMS</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="telegram-checkbox" name="notification-checkbox" value="telegram">
+                            <label for="telegram-checkbox">Telegram</label>
+                        </div>
+                        <p>Aqui vai a mensagem de erro...</p>
+                    </div>
+
+                    <div id="notification-fields">
+                        <div class="form-content-notifications" id="email-field">
+                            <label for="email">Endereço de Email</label>
+                            <input type="email" id="email" name="email" placeholder="Digite seu email">
+                        </div>
+                        <div class="form-content-notifications" id="sms-field">
+                            <label for="phone">Número de Telefone</label>
+                            <input type="text" id="phone" name="phone" placeholder="Digite seu número de telefone">
+                        </div>
+                        <div class="form-content-notifications" id="telegram-field">
+                            <label for="telegram">Usuário do Telegram</label>
+                            <input type="text" id="telegram" name="telegram" placeholder="Digite seu usuário do Telegram">
+                        </div>
+                    </div>
     
                     <button type="submit">Pesquisar</button>
                 </form>
@@ -90,6 +141,7 @@
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <script src="scripts/checkbox-script.js"></script>
+    <script src="scripts/submit-script.js"></script>
 </body>
 </html>
