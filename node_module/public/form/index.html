@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <title>Pokemon Card - Scraper</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a class="logo" href="/">Pokemon Card - Scraper</a>
+            <ul class="nav-list">
+                <li>Trabalho - Sistemas Distribuídos</li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+
+        <div class="image-container">
+            <img src="assets/pikachu.png" alt="">
+        </div>
+
+        <div class="container">
+            <section class="form-header">
+                <img src="assets/pokemon_tcg.png" alt="Pokemon Trading Card Game logo">
+                <h2>Faça o scrap dos dados da Carta</h2>
+            </section>
+
+            <div class="form-wrapper">
+                <form id="form" class="form" action="">
+                    <h3>Preencha os dados da carta:</h3>
+
+                    <div class="form-content">
+                        <label for="name">Nome da Carta</label>
+                        <input 
+                            type="text"
+                            name="name"
+                            id="name"
+                            placeholder="Digite o nome da carta"
+                        />
+                        <small>Aqui vai a mensagem de erro...</small>
+                    </div>
+    
+                    <div class="form-content">
+                        <label for="pre-evolution">Evolui de:</label>
+                        <input 
+                            type="text"
+                            name="pre-evolution"
+                            id="pre-evolution"
+                            placeholder="Digite a pré-evolução da carta"
+                        />
+                        <small>Aqui vai a mensagem de erro...</small>
+                    </div>
+    
+                    <div class="form-content">
+                        <label for="type">Tipo da Carta</label>
+                        <select name="type" id="type">
+                            <option value="" disabled selected>Selecione o tipo</option>
+                            <option value="fire">Fogo</option>
+                            <option value="water">Água</option>
+                            <option value="grass">Grama</option>
+                            <option value="electric">Elétrico</option>
+                            <option value="psychic">Psíquico</option>
+                            <option value="fighting">Lutador</option>
+                            <option value="darkness">Noturno</option>
+                            <option value="metal">Metálico</option>
+                            <option value="colorless">Normal</option>
+                            <option value="fairy">Fada</option>
+                            <option value="dragon">Dragão</option>
+                        </select>
+                        <small>Aqui vai a mensagem de erro...</small>
+                    </div>
+    
+                    <div class="form-content">
+                        <label for="text">Texto da Carta</label>
+                        <textarea 
+                            name="text" 
+                            id="text"
+                            placeholder="Digite o texto da carta"
+                            rows="4"
+                        ></textarea>
+                        <small>Aqui vai a mensagem de erro...</small>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="form-content">
+                        <h3>Informações do Usuário:</h3>
+
+                        <label for="username">Nome do Usuário</label>
+                        <input 
+                            type="text"
+                            name="username"
+                            id="username"
+                            placeholder="Digite seu nome de usuário"
+                        />
+                        <small>Aqui vai a mensagem de erro...</small>
+                    </div>
+                    
+                    <div class="form-checkboxes" id="form-checkboxes">
+                        <label>Métodos de Notificação</label>
+                        <div class="checkbox">
+                            <input type="checkbox" id="email-checkbox" name="notification-checkbox" value="email">
+                            <label for="email-checkbox">Email</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="sms-checkbox" name="notification-checkbox" value="sms">
+                            <label for="sms-checkbox">SMS</label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="telegram-checkbox" name="notification-checkbox" value="telegram">
+                            <label for="telegram-checkbox">Telegram</label>
+                        </div>
+                        <small>Aqui vai a mensagem de erro...</small>
+                    </div>
+
+                    <div id="notification-container" class="notification-fields">
+                        <div class="form-content-notifications" id="email-field">
+                            <label for="email">Endereço de Email</label>
+                            <input type="email" id="email" name="email" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" placeholder="Digite seu email">
+                            <small>Aqui vai a mensagem de erro...</small>
+                        </div>
+                        <div class="form-content-notifications" id="phone-field">
+                            <label for="phone">Número de Telefone</label>
+                            <div class="phone-input">
+                                <select id="country-code" name="country-code" onchange="applyMask()">
+                                    <option value="+55">🇧🇷 +55</option>
+                                    <option value="+1">🇺🇸 +1</option>
+                                </select>
+                                <input type="text" id="phone" name="phone" placeholder="Digite seu número de telefone">
+                            </div>
+                            <small>Aqui vai a mensagem de erro...</small>
+                        </div>
+                    </div>
+    
+                    <button type="submit">Pesquisar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
