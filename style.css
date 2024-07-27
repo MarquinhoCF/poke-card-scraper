@@ -193,7 +193,7 @@ main {
     display: block;
 }
 
-/* Estilo para o campo de notificação */
+/* ESTILO PARA OS CAMPOS DE NOTIFICAÇÃO */
 .notification-fields {
     display: none;
 }
@@ -243,7 +243,7 @@ main {
     display: block;
 }
 
-/* Container para o campo de telefone */
+/* INPUT DO TELEFONE */
 .phone-input {
     display: flex;
     align-items: center;
