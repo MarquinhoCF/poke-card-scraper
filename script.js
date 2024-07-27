@@ -4,10 +4,11 @@ const name = document.getElementById('name');
 const pre_evolution = document.getElementById('pre-evolution');
 const type = document.getElementById('type');
 const text = document.getElementById('text');
+
+// Elementos referentes ao Usuário
 const username = document.getElementById('username');
 const email = document.getElementById('email');
 const phone = document.getElementById('phone');
-const telegram = document.getElementById('telegram');
 
 // Elemento que envolve as checkboxes
 const formCheckboxes = document.getElementById('form-checkboxes');
@@ -18,38 +19,72 @@ const smsCheckbox = document.getElementById('sms-checkbox');
 const telegramCheckbox = document.getElementById('telegram-checkbox');
 
 // Elemento que envolve os campos que definem os métodos de notificação
-const notificationFields = document.getElementById('notification-fields');
+const notificationFields = document.getElementById('notification-container');
+
+// Elementos dos campos de notificação
+const emailField = document.getElementById('email-field');
+const phoneField = document.getElementById('phone-field');
+
+// Elemento do select do código do país
+const countryCodeSelect = document.getElementById('country-code');
 
 // Evento para atualizar os campos de notificação quando as checkboxes são marcadas
 document.addEventListener('DOMContentLoaded', () => {
     emailCheckbox.addEventListener('change', updateNotificationFields);
     smsCheckbox.addEventListener('change', updateNotificationFields);
     telegramCheckbox.addEventListener('change', updateNotificationFields);
-
-    updateNotificationFields();
+    phone.addEventListener('input', handlePhoneInput); 
 });
 
 // Lógica para atualizar os campos de notificação no formulário
 function updateNotificationFields() {
     let anyChecked = emailCheckbox.checked || smsCheckbox.checked || telegramCheckbox.checked;
-
+    let anyCheckedPhone = smsCheckbox.checked || telegramCheckbox.checked;
+    
     notificationFields.classList.toggle('show', anyChecked);
-
-    toggleValue(emailCheckbox, email);
-    toggleValue(smsCheckbox, phone);
-    toggleValue(telegramCheckbox, telegram);
+    
+    toggleValue(emailCheckbox.checked, emailField);
+    toggleValue(anyCheckedPhone, phoneField);
 }
 
 // Mostra e esconde o input conforme valor da checkbox e cuida para resetar o input
-function toggleValue(checkInput, formInput) {
-    let checked = checkInput.checked;
-    let field = formInput.parentElement;
+function toggleValue(checked, field) {
     field.classList.toggle('show', checked);
-    
+
     if (!checked) {
-        formInput.value = '';
-        setSuccessFor(formInput, 'form-content-notifications');
+        let input = field.querySelector('input');
+        if (input) {
+            input.value = '';
+            field.className = 'form-content-notifications';
+        }
     }
+}
+
+function handlePhoneInput() {
+    let value = phone.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+    let formattedValue = '';
+    const countryCode = countryCodeSelect.value;
+
+    switch (countryCode) {
+        case '+55': // Brasil
+            if (value.length <= 11) {
+                formattedValue = value.replace(/(\d{2})(\d{5})(\d{4})/, '$1 $2-$3');
+            } else {
+                formattedValue = value.replace(/(\d{2})(\d{5})(\d{4})/, '$1 $2-$3').slice(0, 13);
+            }
+            break;
+        case '+1': // EUA
+            if (value.length <= 10) {
+                formattedValue = value.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+            } else {
+                formattedValue = value.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3').slice(0, 12);
+            }
+            break;
+        default:
+            formattedValue = value; // Caso padrão para códigos não suportados
+    }
+
+    phone.value = formattedValue;
 }
 
 // Evento para checar os valores do input
@@ -63,24 +98,26 @@ form.addEventListener('submit', (event) => {
     const usernameValue = username.value.trim();
     const emailValue = email.value.trim();
     const phoneValue = phone.value.trim();
-    const telegramValue = telegram.value.trim();
 
-    if (checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, usernameValue, emailValue, phoneValue, telegramValue)) {
-        console.log(nameValue);
-        console.log(pre_evolutionValue);
-        console.log(typeValue);
-        console.log(textValue);
-        console.log(usernameValue);
-        console.log(emailValue);
-        console.log(phoneValue);
-        console.log(telegramValue);
+    if (checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, usernameValue, emailValue, phoneValue)) {
+        alert(
+            `
+            Nome: ${nameValue}
+            Pré-evolução: ${pre_evolutionValue}
+            Tipo: ${typeValue}
+            Texto: ${textValue}
+            Nome de usuário: ${usernameValue}
+            E-mail: ${emailValue}
+            Telefone: ${phoneValue}
+            Métodos de notificação: ${emailCheckbox.checked ? 'E-mail' : ''} ${smsCheckbox.checked ? 'SMS' : ''} ${telegramCheckbox.checked ? 'Telegram' : ''}
+            `
+        );
     }
     updateNotificationFields();
 });
 
-
 // Função para checar os valores do input
-function checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, usernameValue, emailValue, phoneValue, telegramValue) {
+function checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, usernameValue, emailValue, phoneValue) {
     let isInvalid = true;
     let anyChecked = emailCheckbox.checked || smsCheckbox.checked || telegramCheckbox.checked;
 
@@ -96,13 +133,6 @@ function checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, userna
         isInvalid = false;
     } else {
         setSuccessFor(pre_evolution);
-    }
-
-    if (typeValue === '') {
-        setErrorFor(type, 'É necessário selecionar um tipo');
-        isInvalid = false;
-    } else {
-        setSuccessFor(type);
     }
 
     if (textValue === '') {
@@ -122,7 +152,7 @@ function checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, userna
     // O usuário pode escolher os modos de notificação
     // Mas pelo menos um deve ser escolhido
     if (!anyChecked) {
-        const errorText = formCheckboxes.querySelector('p');
+        const errorText = formCheckboxes.querySelector('small');
         errorText.innerText = 'É necessário selecionar pelo menos uma forma de notificação';
         formCheckboxes.className = 'form-checkboxes error';
         isInvalid = false;
@@ -131,66 +161,51 @@ function checkInputs(nameValue, pre_evolutionValue, typeValue, textValue, userna
     }
 
     if (anyChecked) {
-        if (emailCheckbox.checked) {
-            if (emailValue === '') {
-                setErrorFor(email, 'E-mail não pode estar em branco', 'form-content-notifications error');
-                isInvalid = false;
-            } else if (!isValidEmail(emailValue)) {
-                setErrorFor(email, 'E-mail inválido, tente digitar novamente', 'form-content-notifications error');
-                isInvalid = false;
-            } else {
-                setSuccessFor(email, 'form-content-notifications');
-            }
-        }
-
-        if (smsCheckbox.checked) {
-            if (phoneValue === '') {
-                setErrorFor(phone, 'Telefone não pode estar em branco', 'form-content-notifications error');
-                isInvalid = false;
-            } else if (!isValidPhone(phoneValue)) {
-                setErrorFor(phone, 'Telefone inválido, tente digitar novamente', 'form-content-notifications error');
-                isInvalid = false;
-            } else {
-                setSuccessFor(phone, 'form-content-notifications');
-            }
-        }
-
-        if (telegramCheckbox.checked && telegramValue === '') {
-            setErrorFor(telegram, 'Telegram não pode estar em branco', 'form-content-notifications error');
+        if (emailCheckbox.checked && emailValue === '') {
+            setErrorFor(email, 'E-mail não pode estar em branco', 'form-content-notifications error');
             isInvalid = false;
         } else {
-            setSuccessFor(telegram, 'form-content-notifications');
+            setSuccessFor(email, 'form-content-notifications');
+        }
+
+        if ((smsCheckbox.checked || telegramCheckbox.checked) && phoneValue === '') {
+            setErrorFor(phone.parentElement, 'Telefone não pode estar em branco', 'form-content-notifications error');
+            isInvalid = false;
+        } else {
+            validatePhoneNumber();
         }
     }
 
     return isInvalid;
 }
 
+function validatePhoneNumber() {
+    let value = phone.value.replace(/\D/g, '');
+    const countryCode = countryCodeSelect.value;
 
-// Função para validar email
-function isValidEmail(email) {
-    // Email deve conter @ e pelo menos um ponto
-    // Não pode conter espaços
-    // Deve conter pelo menos um caractere antes e depois do @
-    // Deve conter pelo menos um caractere antes e depois do ponto
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
+    let valid = true;
+    switch (countryCode) {
+        case '+55': // Brasil
+            if (value.length !== 11) valid = false;
+            break;
+        case '+1': // EUA
+            if (value.length !== 10) valid = false;
+            break;
+        default:
+            valid = false; // Caso padrão para códigos não suportados
+    }
 
-// Função para validar telefone
-function isValidPhone(phone) {
-    // Telefone pode ter de 10 a 15 dígitos
-    // Pode conter caracteres especiais como + e -
-    // Não pode conter espaços
-    // Não pode conter letras
-    const phoneRegex = /^\d{10,15}$/;
-    return phoneRegex.test(phone);
+    if (valid) {
+        setSuccessFor(phone.parentElement, 'form-content-notifications');
+    } else {
+        setErrorFor(phone.parentElement, 'Telefone inválido', 'form-content-notifications error');
+    }
 }
 
 // Altera o estilo para representar um valor inválido
 function setErrorFor(input, message, className = 'form-content error') {
     const formItem = input.parentElement;
-    const errorText = formItem.querySelector('p');
+    const errorText = formItem.querySelector('small');
 
     errorText.innerText = message;
 
