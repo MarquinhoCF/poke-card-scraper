@@ -205,18 +205,29 @@ def job():
             results = driver.find_elements(By.CSS_SELECTOR, ".search-result__content")
             for result in results:
                 try:
+                    title = extract_title(result)
                     set_name, rarity, number = extract_meta(result)
+                    market_price = extract_market_price(result)
+
+                    if market_price is None:
+                        print(f"Produto sem preço de mercado: {title}")
+                        continue
+
+                    product_url = extract_product_url(result)
+                    top_listings = extract_top_listings(result)
+
                     data = {
-                        'title': extract_title(result),
+                        'title': title,
                         'set': set_name,
                         'rarity': rarity,
                         'number': number,
-                        'market_price': extract_market_price(result),
-                        'product_url': extract_product_url(result),
-                        'top_listings': extract_top_listings(result)
+                        'market_price': market_price,
+                        'product_url': product_url,
+                        'top_listings': top_listings
                     }
                     print(data)
                     all_data.append(data)
+
                 except Exception as e:
                     print(f"Erro ao processar resultado: {e}")
 
