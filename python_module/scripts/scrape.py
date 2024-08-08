@@ -1,4 +1,3 @@
-from sched import scheduler
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -7,12 +6,13 @@ import time
 import json
 import re
 
-# VARIAVEIS IMPORTANTES
+# ---------------- CONFIGURAÇÕES ----------------
 # Caminho do arquivo onde o JSON será salvo
-output_file = 'pokemon_tcg_data.json'
+output_file = './data/pokemon_tcg_data.json'
 # URL para raspar
 url = 'https://www.tcgplayer.com/search/pokemon/product?view=list&productLineName=pokemon&setName=sv-scarlet-and-violet-151|swsh01-sword-and-shield-base-set|sm-base-set|xy-base-set|legendary-collection|xy-evolutions&page=1&inStock=true&Language=English'
 
+# ---------------- CONFIGURAÇÕES DO SELENIUM ----------------
 # Configurar as opções do Chrome
 options = Options()
 options.add_argument("--start-maximized")
@@ -23,20 +23,24 @@ options.add_experimental_option('excludeSwitches', ['enable-automation'])
 options.add_experimental_option('useAutomationExtension', False)
 
 # Definir o caminho para o ChromeDriver
-service = Service('./python_module/chromedriver/chromedriver_v127.exe')
-driver = webdriver.Chrome(service=service, options=options)
+service = Service('./chromedriver/chromedriver_v127.exe')
 
-# Ajustar as preferências do driver
-driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
-    "source": """
-        Object.defineProperty(navigator, 'webdriver', {
-            get: () => undefined
-        });
-    """
-})
+# ---------------- FUNÇÕES DE UTILIDADE ----------------
 
-# FUNÇÕES DE EXTRAÇÃO DE DADOS
-def get_page_count():
+# Inicializa o WebDriver com as configurações especificadas.
+def init_driver():
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+        "source": """
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined
+            });
+        """
+    })
+    return driver
+
+# Obtém o número de páginas disponíveis na pesquisa.
+def get_page_count(driver):
     try:
         pagination = driver.find_element(By.CSS_SELECTOR, ".tcg-pagination__pages")
         page_links = pagination.find_elements(By.TAG_NAME, "a")
@@ -45,17 +49,19 @@ def get_page_count():
         print(f"Erro ao obter o número de páginas: {e}")
         return 1  # Default para 1 página se não conseguir determinar
 
-def extract_text(element, class_name, by = By.CLASS_NAME):
+# Extrai texto de um elemento, dado um seletor.
+def extract_text(element, class_name, by=By.CLASS_NAME):
     try:
         el = element.find_element(by, class_name)
         return el.text
     except Exception as e:
         print(f"Erro ao extrair texto de '{class_name}' por '{by}': {e}")
         return None
-
+# Extrai o título do produto."""
 def extract_title(element):
     return extract_text(element, "product-info__title")
 
+# Extrai informações como 'set', 'rarity' e 'number'."""
 def extract_meta(element):
     meta_text = extract_text(element, "product-info__meta")
     if meta_text:
@@ -67,9 +73,12 @@ def extract_meta(element):
     else:
         return None, None, None
 
+# Extrai o preço de mercado do produto.
 def extract_market_price(element):
-    return extract_text(element, "product-info__market-price--value")
+    price = extract_text(element, "product-info__market-price--value")
+    return price.replace('$', '') if price else None
 
+# Extrai a URL do produto.
 def extract_product_url(element):
     try:
         link_element = element.find_element(By.TAG_NAME, "a")
@@ -78,6 +87,7 @@ def extract_product_url(element):
         print(f"Erro ao extrair URL do produto: {e}")
         return None
 
+# Extrai as listagens de vendedores principais do produto.
 def extract_top_listings(element):
     top_listings = []
     try:
@@ -92,14 +102,14 @@ def extract_top_listings(element):
             top_listings.append({
                 "condition": condition,
                 "seller": seller,
-                "price": price.replace('$', ''),
-                "shipping": shipping.replace('$', '')
+                "price": price.replace('$', '') if price else None,
+                "shipping": shipping.replace('$', '') if shipping else None
             })
     except Exception as e:
         print(f"Erro ao extrair listagens: {e}")
     return top_listings
 
-# Salvar os dados em formato JSON formatado
+# Salva os dados em um arquivo JSON formatado.
 def save_data(data, filename=output_file):
     try:
         with open(filename, 'w', encoding='utf-8') as f:
@@ -108,13 +118,13 @@ def save_data(data, filename=output_file):
     except Exception as e:
         print(f"Erro ao salvar os dados em JSON: {e}")
 
-# Carregar os dados de um arquivo JSON
-def openJSONFile(filename=output_file):
+# Carrega os dados de um arquivo JSON.
+def open_json_file(filename=output_file):
     with open(filename, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-# INFORMAÇÕES ESTATÍSTICAS SOBRE O DATASET OBTIDO:
-def getStatistcs(dataset):
+# Gera estatísticas básicas do dataset.
+def get_statistics(dataset):
     print("\n\n------------------- Análise estatística dos dados obtidos: -------------------\n")
     # Número total de produtos observados
     total_products = len(dataset)
@@ -173,21 +183,24 @@ def getStatistcs(dataset):
     for condition, count in condition_counts.items():
         print(f"{condition}: {count} ocorrência(s)")
 
-# Job de RASPAGEM E PROCESSAMENTO
+# ---------------- FUNÇÃO PRINCIPAL DE RASPAGEM ----------------
+
+# Executa a raspagem de dados e salva os resultados em um arquivo JSON.
 def job():
     print("Iniciando a raspagem de dados de Pokemon TCG...")
+    driver = init_driver()  # Inicializa o driver
     all_data = []
 
     try:
         driver.get(url)
-        time.sleep(10) # Aguardar a página carregar completamente
+        time.sleep(10)  # Aguardar a página carregar completamente
 
-        num_pages = get_page_count()
+        num_pages = get_page_count(driver)
 
         for page in range(1, num_pages + 1):
             print(f"Extraindo dados da página {page} de {num_pages} páginas...")
             driver.get(re.sub(r'page=\d+', f'page={page}', url))
-            time.sleep(5) # Aguardar a página carregar completamente
+            time.sleep(5)  # Aguardar a página carregar completamente
 
             results = driver.find_elements(By.CSS_SELECTOR, ".search-result__content")
             for result in results:
@@ -198,7 +211,7 @@ def job():
                         'set': set_name,
                         'rarity': rarity,
                         'number': number,
-                        'market_price': extract_market_price(result).replace('$', ''),
+                        'market_price': extract_market_price(result),
                         'product_url': extract_product_url(result),
                         'top_listings': extract_top_listings(result)
                     }
@@ -211,10 +224,10 @@ def job():
         driver.quit()
 
     save_data(all_data)
-    dataset = openJSONFile()
-    getStatistcs(dataset)
+    dataset = open_json_file()
+    get_statistics(dataset)
 
+# ---------------- AGENDAMENTO DE TAREFAS ----------------
 while True:
-    scheduler.every().day.at("09:00").do(job)
-    scheduler.run_pending()
-    time.sleep(60)  # Verificar a cada minuto se é hora de executar o job
+    job()
+    time.sleep(7200)
