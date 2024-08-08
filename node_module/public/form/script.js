@@ -12,10 +12,16 @@ const phone = document.getElementById('phone');
 
 // Elemento que envolve as checkboxes e campos de notificação
 const formCheckboxes = document.getElementById('form-checkboxes');
+
+// Elementos referentes às checkboxes de notificação
 const emailCheckbox = document.getElementById('email-checkbox');
 const smsCheckbox = document.getElementById('sms-checkbox');
 const telegramCheckbox = document.getElementById('telegram-checkbox');
+
+// Elemento que envolve os campos de notificação
 const notificationFields = document.getElementById('notification-container');
+
+// Elementos referentes aos campos de notificação
 const emailField = document.getElementById('email-field');
 const phoneField = document.getElementById('phone-field');
 const countryCodeSelect = document.getElementById('country-code');
