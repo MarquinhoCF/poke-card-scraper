@@ -1,5 +1,6 @@
 import os
 import re
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -55,6 +56,17 @@ def save_html(html_content, folder_path, page_num):
     except Exception as e:
         print(f"Erro ao salvar o HTML: {e}")
 
+def notify_server(timestamp):
+    url = "http://localhost:5001/cleanData"
+    headers = {'Content-Type': 'application/json'}
+    data = {"timestamp": timestamp}
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        response.raise_for_status()  # Levanta um erro para códigos de status HTTP 4xx/5xx
+        print("Notificação enviada com sucesso!")
+    except requests.exceptions.RequestException as e:
+        print(f"Erro ao enviar notificação: {e}")
+
 # Função principal para capturar o HTML da página.
 def job():
     print("Iniciando a captura do HTML...")
@@ -82,6 +94,7 @@ def job():
 
     finally:
         driver.quit()
+        notify_server(timestamp)  # Envia notificação após o job ser concluído
 
 # ---------------- AGENDAMENTO DE TAREFAS ----------------
 while True:
