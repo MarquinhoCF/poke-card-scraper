@@ -2,8 +2,11 @@ from flask import Flask, request, jsonify
 import os
 import json
 from bs4 import BeautifulSoup
+import requests
 
 app = Flask(__name__)
+
+url_node_server = 'http://api:5000/storeData'
 
 # Caminho da pasta onde os HTMLs estão salvos
 base_dir = '../dirty_data/'
@@ -155,6 +158,10 @@ def process_html_files(timestamp):
     save_data(all_data, filename=output_file)
     get_statistics(all_data)
 
+def send_data_to_api(data):
+    response = requests.post(url_node_server, json=data)
+    return response.json()
+
 # Endpoint para processar dados
 @app.route('/cleanData', methods=['POST'])
 def clean_data():
@@ -164,7 +171,12 @@ def clean_data():
     if not timestamp:
         return jsonify({'error': 'Timestamp não fornecido'}), 400
     
-    process_html_files(timestamp)
+    data = process_html_files(timestamp)
+
+    if not data:
+        return jsonify({'error': 'Erro ao processar os arquivos HTML'}), 500
+    
+    send_data_to_api(data)
     return jsonify({'message': 'Processamento concluído com sucesso'}), 200
 
 if __name__ == '__main__':

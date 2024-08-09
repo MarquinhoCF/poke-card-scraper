@@ -106,9 +106,44 @@ form.addEventListener('submit', (event) => {
     const phoneValue = phone.value.trim();
 
     if (checkInputs(nameValue, preEvolutionValue, typeValue, textValue, usernameValue, emailValue, phoneValue)) {
-        alert(
-            `Nome: ${nameValue}\nPré-evolução: ${preEvolutionValue}\nTipo: ${typeValue}\nTexto: ${textValue}\nNome de usuário: ${usernameValue}\nE-mail: ${emailValue}\nTelefone: ${phoneValue}\nMétodos de notificação: ${getCheckedNotifications()}`
-        );
+        console.log('Formulário válido!');
+        const formData = new FormData();
+
+        formData.append('name', nameValue);
+        formData.append('preEvolution', preEvolutionValue);
+        formData.append('type', typeValue);
+        formData.append('text', textValue);
+        formData.append('userName', usernameValue);
+        formData.append('notificationsMethods', getCheckedNotifications());
+        formData.append('email', emailValue);
+        formData.append('phone', phoneValue);
+
+        console.log('Dados do formulário:', formData);
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        fetch('/notify', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            // Lógica para lidar com a resposta de erro do servidor
+            if (!response.ok) {
+                throw new Error('Erro ao enviar formulário');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Lógica para lidar com a resposta do servidor, se necessário
+            console.log('Resposta do servidor:', data);
+            alert('Formulário enviado com sucesso!');
+        })
+        .catch(error => {
+            // Lógica para lidar com erros de requisição
+            console.error('Erro ao enviar formulário:', error);
+            alert('Erro ao enviar formulário. Por favor, tente novamente mais tarde.');
+        });
     }
     updateNotificationFields();
 });
