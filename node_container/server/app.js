@@ -1,8 +1,6 @@
 const express = require('express');
 const path = require('path');
-const multer = require('multer');
 
-const upload = multer(); // para lidar com form-data
 const app = express();
 const port = 3000;
 
