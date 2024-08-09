@@ -4,6 +4,8 @@ docker run -it -p 5001:5001 -v /../scrape/dirty_data:/app/../dirty_data --name p
 
 docker exec -it poke-card-data-cleaning bash
 
+docker stop poke-card-data-cleaning
+
 Listagem de container em execução
 docker ps
 
