@@ -1,0 +1,22 @@
+# Utiliza uma imagem base oficial do Python
+FROM python:3.12-slim
+
+# Define o diretório de trabalho no container
+WORKDIR /app
+
+# Cria uma nova pasta chamada 'new_directory' dentro de /app
+RUN mkdir -p /app/dirty_data
+RUN mkdir -p /app/data
+
+# Copia os arquivos do python_module para o container
+COPY  server server/
+COPY  requirements.txt ./
+
+# Instala as dependências especificadas em requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Exponha a porta que o servidor Flask utilizará
+EXPOSE 5001
+
+# Define o comando para rodar o servidor Flask
+CMD ["python", "server/data_cleaning.py"]
