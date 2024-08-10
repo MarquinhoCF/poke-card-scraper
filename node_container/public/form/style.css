@@ -44,7 +44,7 @@ nav {
 main {
     background: 
         linear-gradient(rgba(35, 35, 46, 0.7), rgba(35, 35, 46, 0.7)),
-        url("assets/bg.jpg") no-repeat center center;
+        url("../assets/bg.jpg") no-repeat center center;
     background-size: cover;
     height: 92vh;
     display: flex;

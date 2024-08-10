@@ -23,16 +23,16 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir);
 }
 
-// Endpoint para receber dados e salvar no CSV
+// Endpoint para receber dados e salvar no arquivo JSON
 app.post('/storeData', (req, res) => {
   const { timestamp, data_chunk, chunk_index, total_chunks } = req.body;
     
   if (!timestamp || data_chunk === undefined || chunk_index === undefined || total_chunks === undefined) {
-      return res.status(400).send('Dados incompletos');
+    return res.status(400).send('Dados incompletos');
   }
 
   if (!receivedChunks[timestamp]) {
-      receivedChunks[timestamp] = [];
+    receivedChunks[timestamp] = [];
   }
   
   receivedChunks[timestamp][chunk_index] = JSON.parse(data_chunk);
@@ -61,20 +61,24 @@ app.post('/storeData', (req, res) => {
     }
 
     // Atualiza ou adiciona novos dados para cada jogador
-    completeData.forEach(cardData => {
-      const cardTitle = cardData.title;
-      const cardSet = cardData.set;
-      const cardRarity = cardData.rarity;
-      const cardMarketPrice = cardData.market_price;
+    completeData.forEach(productData => {
+      const productTitle = productData.title;
+      const productSet = productData.set;
+      const productRarity = productData.rarity;
+      const productMarketPrice = productData.market_price;
 
-      cardKey = cardTitle + ', ' + cardSet + ', ' + cardRarity;
-      if (existingData[cardKey]) {
-        existingData[cardKey].prices.push(cardMarketPrice);
-        existingData[cardKey].receivedAt.push(timestamp);
+      productKey = productTitle + ', ' + productSet;
+      if (productKey)
+        productKey += ', ' + productRarity;
+
+      if (existingData[productKey]) {
+        existingData[productKey].market_prices.push(productMarketPrice);
+        existingData[productKey].timestamps.push(timestamp);
       } else {
-        existingData[cardKey] = {
-          prices: [cardMarketPrice],
-          receivedAt: [timestamp]
+        // Se for a primeira vez que estamos adicionando esta carta, criamos uma nova entrada com um UUID
+        existingData[productKey] = {
+          market_prices: [productMarketPrice],
+          timestamps: [timestamp]
         };
       }
     });
@@ -102,12 +106,66 @@ app.post('/storeData', (req, res) => {
   
 });
 
+// Endpoint para obter a lista de jogadores
+app.get('/products', (req, res) => {
+  fs.readFile(path.join(dataDir, 'history.json'), 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler dados:', err);
+      return res.status(500).send('Erro ao ler dados.');
+    }
 
+    let pokemonTCGData;
+    try {
+      pokemonTCGData = JSON.parse(data);
+    } catch (parseErr) {
+      console.error('Erro ao parsear JSON:', parseErr);
+      return res.status(500).send('Erro ao parsear dados.');
+    }
 
+    const productKeys = Object.keys(pokemonTCGData)
 
+    if (!pokemonTCGData || productKeys.length === 0) {
+      return res.status(404).send('Nenhum dado encontrado.');
+    }
+
+    res.status(200).json(productKeys);
+  });
+});
+
+// Endpoint para fornecer dados do gráfico de um jogador específico
+app.get('/chartData/:productKey', (req, res) => {
+  const productKey = decodeURIComponent(req.params.productKey);
+
+  console.log('Obtendo dados do gráfico para:', productKey);
+
+  fs.readFile(path.join(dataDir, 'history.json'), 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro ao ler dados' });
+    }
+
+    const historyData = JSON.parse(data);
+
+    if (!historyData[productKey]) {
+      return res.status(404).json({ message: 'Jogador não encontrado' });
+    }
+
+    const productHistoryData = historyData[productKey];
+    console.log(productHistoryData)
+    const chartData = productHistoryData.market_prices.map((price, index) => ({
+      price: price,
+      time: productHistoryData.timestamps[index]
+    }));
+
+    res.json(chartData);
+  });
+});
 
 app.get('/form', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'form', 'index.html'));
+});
+
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'dashboard', 'index.html'));
 });
 
 app.post('/notify', async (req, res) => {
