@@ -29,6 +29,10 @@ def extract_data_from_html(file_path):
                 product_url = extract_url(result)
                 top_listings = extract_top_listings(result)
 
+                # Ignora produtos sem preço de mercado
+                if market_price == None:
+                    continue
+
                 data.append({
                     'title': title,
                     'set': set_name,
@@ -174,6 +178,21 @@ def send_data_to_endpoint_in_chunks(data, timestamp, endpoint, chunk_size=10*102
         except requests.RequestException as e:
             print(f'Erro ao enviar chunk {i+1}: {str(e)}')
 
+def remove_duplicates(data):
+    unique_items = []
+    seen = set()
+
+    for item in data:
+        # Cria uma chave única baseada nos valores de title, set e rarity
+        unique_key = (item.get('title'), item.get('set'), item.get('rarity'))
+
+        # Se a chave não foi vista antes, adicione o item ao array único
+        if unique_key not in seen:
+            unique_items.append(item)
+            seen.add(unique_key)
+
+    return unique_items
+
 # Função para processar todos os arquivos HTML de uma pasta com base no timestamp
 def process_html_files(timestamp):
     dir_path = os.path.join(base_dir, timestamp)
@@ -190,10 +209,11 @@ def process_html_files(timestamp):
             data = extract_data_from_html(file_path)
             all_data.extend(data)
     
+    dataToSend = remove_duplicates(all_data)
     output_file = f'./data/{timestamp}.json'
-    save_data(all_data, filename=output_file)
-    get_statistics(all_data)
-    send_data_to_endpoint_in_chunks(all_data, timestamp, url_node_server)
+    save_data(dataToSend, filename=output_file)
+    get_statistics(dataToSend)
+    send_data_to_endpoint_in_chunks(dataToSend, timestamp, url_node_server)
 
 # Endpoint para processar dados
 @app.route('/cleanData', methods=['POST'])
@@ -232,6 +252,8 @@ def send_data_to_node_server():
         return jsonify({'error': 'Erro ao decodificar o JSON.'}), 500
     
     send_data_to_endpoint_in_chunks(data, timestamp, url_node_server)
+    return jsonify({'message': 'Dados processados com sucesso'}), 200
+    
     
 
 if __name__ == '__main__':

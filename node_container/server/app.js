@@ -46,7 +46,8 @@ app.post('/storeData', (req, res) => {
     // Processar dados completos
     console.log('Dados completos recebidos:', completeData);
 
-    const jsonFilePath = path.join(dataDir, 'dados.json'); // Caminho para o arquivo JSON
+    const jsonHistoryFilePath = path.join(dataDir, 'history.json');
+    const jsonDataFilePath = path.join(dataDir, 'data.json');
 
     if (!Array.isArray(completeData)) {
       return res.status(400).send('Formato de dados inválido. Esperado um array de objetos.');
@@ -54,21 +55,24 @@ app.post('/storeData', (req, res) => {
 
     // Leitura e atualização do arquivo JSON
     let existingData = {};
-    if (fs.existsSync(jsonFilePath)) {
-      const fileData = fs.readFileSync(jsonFilePath);
+    if (fs.existsSync(jsonHistoryFilePath)) {
+      const fileData = fs.readFileSync(jsonHistoryFilePath);
       existingData = JSON.parse(fileData);
     }
 
     // Atualiza ou adiciona novos dados para cada jogador
     completeData.forEach(cardData => {
       const cardTitle = cardData.title;
+      const cardSet = cardData.set;
+      const cardRarity = cardData.rarity;
       const cardMarketPrice = cardData.market_price;
 
-      if (existingData[cardTitle]) {
-        existingData[cardTitle].prices.push(cardMarketPrice);
-        existingData[cardTitle].receivedAt.push(timestamp);
+      cardKey = cardTitle + ', ' + cardSet + ', ' + cardRarity;
+      if (existingData[cardKey]) {
+        existingData[cardKey].prices.push(cardMarketPrice);
+        existingData[cardKey].receivedAt.push(timestamp);
       } else {
-        existingData[cardTitle] = {
+        existingData[cardKey] = {
           prices: [cardMarketPrice],
           receivedAt: [timestamp]
         };
@@ -76,10 +80,18 @@ app.post('/storeData', (req, res) => {
     });
 
     // Salva os dados atualizados no arquivo JSON
-    fs.writeFile(jsonFilePath, JSON.stringify(existingData, null, 2), err => {
+    fs.writeFile(jsonHistoryFilePath, JSON.stringify(existingData, null, 2), err => {
       if (err) {
         console.error('Erro ao salvar dados no JSON:', err);
         return res.status(500).send('Erro ao salvar dados.');
+      }
+    });
+
+    // Salva o array completo em um novo arquivo JSON
+    fs.writeFileSync(jsonDataFilePath, JSON.stringify(completeData, null, 2), err => {
+      if (err) {
+        console.error('Erro ao salvar o array completo no JSON:', err);
+        return res.status(500).send('Erro ao salvar o array completo.');
       }
     });
 
