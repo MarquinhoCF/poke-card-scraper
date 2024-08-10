@@ -1,8 +1,10 @@
 docker build -t data-cleaning-server-python3.12 .
 
-docker run -it -p 5001:5001 -v /../scrape/dirty_data:/app/../dirty_data --name poke-card-data-cleaning data-cleaning-server-python3.12
+docker run -it -p 5001:5001 -v C:/poke-card-scraper/scrape/dirty_data:/app/dirty_data --name poke-card-data-cleaning data-cleaning-server-python3.12
 
 docker exec -it poke-card-data-cleaning bash
+
+docker logs poke-card-data-cleaning
 
 docker stop poke-card-data-cleaning
 

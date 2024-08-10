@@ -3,13 +3,15 @@ import os
 import json
 from bs4 import BeautifulSoup
 import requests
+import math
 
 app = Flask(__name__)
 
-url_node_server = 'http://api:5000/storeData'
+url_node_server = 'http://host.docker.internal:3000/storeData'
 
 # Caminho da pasta onde os HTMLs estão salvos
-base_dir = '../dirty_data/'
+current_dir = os.path.dirname(__file__)
+base_dir = os.path.join(current_dir, '..', 'dirty_data')
 
 # Função para extrair os dados de um arquivo HTML
 def extract_data_from_html(file_path):
@@ -138,6 +140,40 @@ def get_statistics(dataset):
     for condition, count in condition_counts.items():
         print(f"{condition}: {count} ocorrência(s)")
 
+def split_data_into_chunks(data, chunk_size):
+    """Divide os dados em chunks menores baseados no tamanho especificado."""
+    total_size = len(json.dumps(data))
+    num_chunks = math.ceil(total_size / chunk_size)
+    
+    chunks = []
+    data_str = json.dumps(data)
+    
+    for i in range(num_chunks):
+        start = i * chunk_size
+        end = start + chunk_size
+        chunk = data_str[start:end]
+        chunks.append(chunk)
+    
+    return chunks
+
+def send_data_to_endpoint_in_chunks(data, timestamp, endpoint, chunk_size=10*1024*1024):
+    """Envia os dados em chunks para o endpoint especificado."""
+    chunks = split_data_into_chunks(data, chunk_size)
+    
+    for i, chunk in enumerate(chunks):
+        payload = {
+            'timestamp': timestamp,
+            'data_chunk': chunk,
+            'chunk_index': i,
+            'total_chunks': len(chunks)
+        }
+        
+        try:
+            response = requests.post(endpoint, json=payload)
+            print(f'Chunk {i+1}/{len(chunks)} - Status Code: {response.status_code}, Response: {response.text}')
+        except requests.RequestException as e:
+            print(f'Erro ao enviar chunk {i+1}: {str(e)}')
+
 # Função para processar todos os arquivos HTML de uma pasta com base no timestamp
 def process_html_files(timestamp):
     dir_path = os.path.join(base_dir, timestamp)
@@ -157,10 +193,7 @@ def process_html_files(timestamp):
     output_file = f'./data/{timestamp}.json'
     save_data(all_data, filename=output_file)
     get_statistics(all_data)
-
-def send_data_to_api(data):
-    response = requests.post(url_node_server, json=data)
-    return response.json()
+    send_data_to_endpoint_in_chunks(all_data, timestamp, url_node_server)
 
 # Endpoint para processar dados
 @app.route('/cleanData', methods=['POST'])
@@ -171,13 +204,35 @@ def clean_data():
     if not timestamp:
         return jsonify({'error': 'Timestamp não fornecido'}), 400
     
-    data = process_html_files(timestamp)
+    try:
+        process_html_files(timestamp)
+        return jsonify({'message': 'Dados processados com sucesso'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-    if not data:
-        return jsonify({'error': 'Erro ao processar os arquivos HTML'}), 500
+@app.route('/sendData2NodeServer', methods=['POST'])
+def send_data_to_node_server():
+    data = request.get_json()
+    if not data or 'timestamp' not in data:
+        return jsonify({'error': 'Timestamp não fornecido'}), 400
+
+    timestamp = data.get('timestamp')
+    json_file_path = os.path.join('./data', f'{timestamp}.json')
     
-    send_data_to_api(data)
-    return jsonify({'message': 'Processamento concluído com sucesso'}), 200
+    if not os.path.isfile(json_file_path):
+        print(f"Arquivo JSON com timestamp '{timestamp}' não encontrado.")
+        return jsonify({'error': f'Arquivo JSON com timestamp {timestamp} não encontrado.'}), 404
+
+    # Ler o conteúdo do arquivo JSON
+    try:
+        with open(json_file_path, 'r') as file:
+            data = json.load(file)
+    except json.JSONDecodeError:
+        print("Erro ao decodificar o JSON.")
+        return jsonify({'error': 'Erro ao decodificar o JSON.'}), 500
+    
+    send_data_to_endpoint_in_chunks(data, timestamp, url_node_server)
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

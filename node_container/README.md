@@ -1,9 +1,9 @@
 npm init -y
-yarn install --flat
-yarn add express
-yarn add fs
-yarn add path
-yarn add nodemon --dev
+npm install
+npm install express
+npm install path
+npm install nodemon
+npm install body-parser
 
 docker build -t node-docker/node:latest .
 

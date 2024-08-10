@@ -130,9 +130,11 @@ form.addEventListener('submit', (event) => {
         .then(response => {
             // Lógica para lidar com a resposta de erro do servidor
             if (!response.ok) {
-                throw new Error('Erro ao enviar formulário');
+                // Extrai a mensagem de erro do JSON da resposta
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message); // Lança o erro com a mensagem
+                });
             }
-            return response.json();
         })
         .then(data => {
             // Lógica para lidar com a resposta do servidor, se necessário
@@ -140,9 +142,9 @@ form.addEventListener('submit', (event) => {
             alert('Formulário enviado com sucesso!');
         })
         .catch(error => {
-            // Lógica para lidar com erros de requisição
+            // Quero que o mensagem recebida do servidor seja exibida no alerta
             console.error('Erro ao enviar formulário:', error);
-            alert('Erro ao enviar formulário. Por favor, tente novamente mais tarde.');
+            alert('Erro ao enviar formulário: ' + error.message);
         });
     }
     updateNotificationFields();
