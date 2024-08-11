@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs-extra');
-const bodyParser = require('body-parser');
+const cron = require('node-cron');
 
 const app = express();
 const port = 3000;
@@ -9,18 +9,24 @@ const port = 3000;
 // Variável para armazenar os chunks recebidos
 const receivedChunks = {};
 
-const submitsPath = path.join(__dirname, '..', 'submit', 'submits.json');
-
 // Middleware para analisar JSON
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 // Servir arquivos estáticos da pasta 'public'
 const dataDir = path.join(__dirname, '..', 'data');
+const submitsPath = path.join(__dirname, '..', 'data', 'submits.json');
 app.use(express.static(path.join(__dirname, '..' , 'public')));
 
 // Garantir que o diretório 'data' exista
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir);
+}
+
+// Inicializar a fila a partir do arquivo JSON
+let submissionQueue  = [];
+if (fs.existsSync(submitsPath)) {
+  const submissionData = fs.readFileSync(submitsPath, 'utf8');
+  submissionQueue = JSON.parse(submissionData);
 }
 
 // Endpoint para receber dados e salvar no arquivo JSON
@@ -209,6 +215,76 @@ app.post('/notify', async (req, res) => {
     console.error('Erro ao salvar dados:', err);
     return res.status(500).json({ message: 'Erro ao salvar dados.' });
   }
+});
+
+// Função para filtrar jogadores com base nos critérios
+function filterProducts(criteria) {
+  const { title, set, rarity, condition, price } = criteria;
+
+  return new Promise((resolve, reject) => {
+    fs.readFile(path.join(dataDir, 'data.json'), 'utf8', (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+
+      const products = JSON.parse(data);
+      const results = products.filter(product => {
+        let matches = true;
+
+        if (title) {
+          matches = matches && product.title.toLowerCase().includes(title.toLowerCase());
+        }
+
+        if (set) {
+          matches = matches && product.set.toLowerCase() === set.toLowerCase();
+        }
+
+        if (rarity) {
+          matches = matches && product.rarity != null && product.rarity.toLowerCase() === rarity.toLowerCase();
+        }
+
+        if (condition) {
+          matches = matches && product.top_listings.some(listing => 
+            listing.condition.toLowerCase() === condition.toLowerCase()
+          );
+        }
+
+        if (price) {
+          matches = matches && product.market_price <= price;
+        }
+
+        return matches;
+      });
+
+      resolve(results);
+    });
+  });
+}
+
+// Tarefa cron para executar a cada 1 minutoss
+cron.schedule('*/1 * * * *', () => {
+  console.log('Executando tarefa de teste a cada 10 minutos');
+
+  // Exemplo de processamento de fila para testes
+  submissionQueue.forEach((submissionData, index) => {
+
+    let criteria = {
+      title: submissionData.title,
+      set: submissionData.set,
+      rarity: submissionData.rarity,
+      condition: submissionData.condition,
+      price: submissionData.price
+    };
+
+    filterProducts(criteria)
+      .then(filteredResults => {
+        // sendNotification(formData, filteredResults)
+        console.log(`Produtos filtrados para a requisição de teste ${index + 1}:`, filteredResults);
+      })
+      .catch(err => {
+        console.error(`Erro ao filtrar produtos para a requisição de teste ${index + 1}:`, err);
+      });
+  });
 });
 
 app.listen(port, () => {

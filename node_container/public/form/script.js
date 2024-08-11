@@ -107,44 +107,34 @@ form.addEventListener('submit', (event) => {
 
     if (checkInputs(nameValue, preEvolutionValue, typeValue, textValue, usernameValue, emailValue, phoneValue)) {
         console.log('Formulário válido!');
-        const formData = new FormData();
-
-        formData.append('name', nameValue);
-        formData.append('preEvolution', preEvolutionValue);
-        formData.append('type', typeValue);
-        formData.append('text', textValue);
-        formData.append('userName', usernameValue);
-        formData.append('notificationsMethods', getCheckedNotifications());
-        formData.append('email', emailValue);
-        formData.append('phone', phoneValue);
+        
+        const formData = {
+            name: nameValue,
+            preEvolution: preEvolutionValue,
+            type: typeValue,
+            text: textValue,
+            userName: usernameValue,
+            notificationsMethods: getCheckedNotifications(),
+            email: emailValue,
+            phone: phoneValue
+        };
 
         console.log('Dados do formulário:', formData);
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
 
         fetch('/notify', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
         })
-        .then(response => {
-            // Lógica para lidar com a resposta de erro do servidor
-            if (!response.ok) {
-                // Extrai a mensagem de erro do JSON da resposta
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message); // Lança o erro com a mensagem
-                });
-            }
-        })
-        .then(data => {
-            // Lógica para lidar com a resposta do servidor, se necessário
-            console.log('Resposta do servidor:', data);
-            alert('Formulário enviado com sucesso!');
+        .then(response => response.json())
+        .then(message => {
+            console.log(message);
+            alert(message.message);
         })
         .catch(error => {
-            // Quero que o mensagem recebida do servidor seja exibida no alerta
             console.error('Erro ao enviar formulário:', error);
-            alert('Erro ao enviar formulário: ' + error.message);
         });
     }
     updateNotificationFields();
