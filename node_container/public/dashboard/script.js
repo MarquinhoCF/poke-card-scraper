@@ -24,7 +24,7 @@ function parseTimestamp(timestamp) {
     
     // Formatar como 'dia/mês: HH:MM:SS'
     const formattedDate = `${day}/${month}`;
-    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     
     return `${formattedDate}: ${formattedTime}`;
 }

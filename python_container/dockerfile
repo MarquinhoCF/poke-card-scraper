@@ -9,6 +9,8 @@ RUN mkdir -p /app/dirty_data
 RUN mkdir -p /app/data
 
 # Copia os arquivos do python_module para o container
+COPY  main.py ./
+COPY .env ./
 COPY  server server/
 COPY  requirements.txt ./
 
@@ -19,4 +21,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5001
 
 # Define o comando para rodar o servidor Flask
-CMD ["python", "server/data_cleaning.py"]
+CMD ["python", "main.py"]

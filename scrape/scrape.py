@@ -94,7 +94,7 @@ def job():
 
     finally:
         driver.quit()
-        #notify_server(timestamp)  # Envia notificação após o job ser concluído
+        notify_server(timestamp)  # Envia notificação após o job ser concluído
 
 # ---------------- AGENDAMENTO DE TAREFAS ----------------
 while True:
