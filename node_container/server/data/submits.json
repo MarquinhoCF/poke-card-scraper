@@ -17,8 +17,8 @@
     "condition": null,
     "price": null,
     "userName": "Marcos",
-    "notificationsMethods": "E-mail",
+    "notificationsMethods": "E-mail, SMS, Telegram",
     "email": "marcos13cf@gmail.com",
-    "phone": ""
+    "phone": "35 98824-4841"
   }
 ]

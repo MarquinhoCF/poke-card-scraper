@@ -114,8 +114,16 @@ exports.readHistoryData = () => {
   });
 };
 
-exports.verifySubmissionQueue = () => {
-  
+exports.getLatestTimestamp = () => {
+  const dataFilePath = path.join(dataDir, 'data.json');
+
+  if (fs.existsSync(dataFilePath)) {
+    const fileData = fs.readFileSync(dataFilePath, 'utf8');
+    const jsonData = JSON.parse(fileData);
+    return jsonData.timestamp;
+  } else {
+    throw new Error('O último timestamp não pode ser encontrado porque o arquivo data.json não foi encontrado.');
+  }
 }
 
 exports.filterProducts = (criteria) => {

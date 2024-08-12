@@ -1,7 +1,8 @@
 const cron = require('node-cron');
 const fs = require('fs-extra');
 const { submitsPath } = require('../config/env');
-const { filterProducts } = require('../utils/fileUtils');
+const { filterProducts, getLatestTimestamp } = require('../utils/fileUtils');
+const sendNotification = require('../utils/notifications');
 
 // Função para carregar a fila de submissões do arquivo
 const loadSubmissionQueue = () => {
@@ -14,6 +15,7 @@ const loadSubmissionQueue = () => {
 
 let submissionQueue = loadSubmissionQueue();
 
+// Tarefa cron para processar as notificações
 cron.schedule('*/1 * * * *', () => {
   console.log('Executando tarefa cron a cada 1 minuto');
 
@@ -31,10 +33,12 @@ cron.schedule('*/1 * * * *', () => {
 
     filterProducts(criteria)
       .then((filteredResults) => {
-        console.log(`Produtos filtrados para a requisição de teste ${index + 1}:`, filteredResults);
+        let timestamp = getLatestTimestamp();
+        sendNotification(submissionData, filteredResults, timestamp);
+        // console.log(`Produtos filtrados para a requisição de teste ${index + 1}:`, filteredResults);
       })
       .catch((err) => {
-        console.error(`Erro ao filtrar produtos para a requisição de teste ${index + 1}:`, err);
+        console.error(`Erro ao filtrar produtos para a requisição de teste ${index + 1}:`, err.message);
       });
   });
 });

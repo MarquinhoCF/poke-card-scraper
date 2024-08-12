@@ -16,7 +16,9 @@
     "fs-extra": "^11.2.0",
     "node_container": "file:",
     "node-cron": "^3.0.3",
-    "path": "^0.12.7"
+    "nodemailer": "^6.9.14",
+    "path": "^0.12.7",
+    "twilio": "^5.2.2"
   },
   "resolutions": {
     "ms": "2.1.3"
