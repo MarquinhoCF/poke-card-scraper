@@ -6,4 +6,12 @@ function formatTimestamp(timestamp) {
     return `${hours}:${minutes} da data ${day}/${month}/${year}`;
 }
 
-module.exports = formatTimestamp;
+function formatPhoneNumber(phoneNumber) {
+    // Remove todos os caracteres que não são dígitos
+    return phoneNumber.replace(/(?!^\+)[^\d]/g, '');
+}
+
+module.exports = {
+    formatTimestamp,
+    formatPhoneNumber
+};

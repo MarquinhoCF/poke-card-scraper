@@ -1,9 +1,6 @@
-const nodemailer = require('nodemailer');
-const twilio = require('twilio');
-//const TelegramBot = require('node-telegram-bot-api');
-const path = require('path');
-const formatTimestamp = require('./format');
+const { formatTimestamp, formatPhoneNumber } = require('./format');
 const transport = require('../config/smtp');
+const client = require('../config/twilio');
 require('dotenv').config({ path: './server/.env' });
 
 function getTextFromProduct(product) {
@@ -93,42 +90,28 @@ function sendEmail(submissionData, notificationText) {
 
 // Função para enviar SMS
 function sendSMS(submissionData, notificationText) {
-    // console.log('sendSMS:');
-    // console.log('notificationText:', notificationText);
-    // const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+    let phoneNumber = formatPhoneNumber(submissionData.phone);
+    
+    console.log('Enviando SMS para:', phoneNumber);
 
-    // client.messages.create({
-    //     body: notificationText,
-    //     from: process.env.TWILIO_PHONE_NUMBER,
-    //     to: formData.phone
-    // })
-    // .then(message => console.log('SMS enviado:', message.sid))
-    // .catch(error => console.log('Erro ao enviar SMS:', error));
-}
-
-// Função para enviar mensagem no Telegram
-function sendTelegramMessage(submissionData, notificationText) {
-    // console.log('sendTelegramMessage:');
-    // console.log('notificationText:', notificationText);
-    // const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
-
-    // bot.sendMessage(formData.telegramChatId, notificationText)
-    //  .then(response => console.log('Mensagem enviada pelo Telegram:', response))
-    //  .catch(error => console.log('Erro ao enviar mensagem pelo Telegram:', error));
+    client.messages.create({
+        body: notificationText,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: phoneNumber
+    })
+    .then(message => console.log('SMS enviado:', message.sid))
+    .catch(error => console.log('Erro ao enviar SMS:', error));
 }
 
 // Função principal para enviar notificações
 function sendNotification(submissionData, filteredResults, timestamp) {
     const notificationText = createNotificationText(submissionData, filteredResults, timestamp);
 
-    if (submissionData.notificationsMethods.includes('E-mail')) {
-        sendEmail(submissionData, notificationText);
-    }
+    // if (submissionData.notificationsMethods.includes('E-mail')) {
+    //     sendEmail(submissionData, notificationText);
+    // }
     if (submissionData.notificationsMethods.includes('SMS')) {
         sendSMS(submissionData, notificationText);
-    }
-    if (submissionData.notificationsMethods.includes('Telegram')) {
-        sendTelegramMessage(submissionData, notificationText);
     }
 }
 
