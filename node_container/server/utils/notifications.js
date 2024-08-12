@@ -3,6 +3,8 @@ const twilio = require('twilio');
 //const TelegramBot = require('node-telegram-bot-api');
 const path = require('path');
 const formatTimestamp = require('./format');
+const transport = require('../config/smtp');
+require('dotenv').config({ path: './server/.env' });
 
 function getTextFromProduct(product) {
     let productText = `Título: ${product.title}\n`;
@@ -60,7 +62,7 @@ function createNotificationText(submissionData, filteredResults, timestamp) {
             });
         }
     } else {
-        notificationText += 'O Pokemon TCG Scraper não encontrou produtos que correspondem aos critérios de busca que você enviou:\n\n';
+        notificationText += 'Infelizmente o Pokemon TCG Scraper não encontrou produtos que correspondem aos critérios de busca que você enviou.s\n';
     }
     
     notificationText += `\nEm 24 horas, uma nova lista será enviada.\n`;
@@ -72,41 +74,27 @@ function createNotificationText(submissionData, filteredResults, timestamp) {
 
 // Função para enviar e-mail
 function sendEmail(submissionData, notificationText) {
-    console.log('sendEmail:');
-    console.log('notificationText:', notificationText);
-    // console.log(process.env.EMAIL_USER)
-    // console.log(process.env.EMAIL_PASS)
-    // const transporter = nodemailer.createTransport({
-    //     host: 'smtp.gmail.com',
-    //     port: 465, // Ou 587
-    //     secure: true, // true for 465, false for other ports
-    //     auth: {
-    //     user: process.env.EMAIL_USER,
-    //     pass: process.env.EMAIL_PASS,
-    //     },
-    // });
-    
+    if (!submissionData.email || submissionData.email.trim() === '') {
+        console.log('Erro: Endereço de e-mail não definido ou vazio.');
+        return;
+    }
 
-    // const mailOptions = {
-    //     from: process.env.EMAIL_USER,
-    //     to: formData.email,
-    //     subject: 'Notificação de Jogadores Encontrados',
-    //     text: notificationText
-    // };
+    const contentEmail = {
+        from: `Pokemon TCG Scraper <${process.env.EMAIL_USER}>`,
+        to: submissionData.email,
+        subject: 'Notificação de Produtos Pokemon TCG Encontrados',
+        text: notificationText
+    };
 
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //     if (error) {
-    //     console.log('Erro ao enviar e-mail:', error);
-    //     } else {
-    //     console.log('E-mail enviado:', info.response);
-    //     }
-    // });
+    transport.sendMail(contentEmail)
+        .then(() => console.log('E-mail enviado:', contentEmail))
+        .catch(error => console.log('Erro ao enviar e-mail:', error));
 }
 
 // Função para enviar SMS
 function sendSMS(submissionData, notificationText) {
-    console.log('sendSMS:');
-    console.log('notificationText:', notificationText);
+    // console.log('sendSMS:');
+    // console.log('notificationText:', notificationText);
     // const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
     // client.messages.create({
@@ -120,8 +108,8 @@ function sendSMS(submissionData, notificationText) {
 
 // Função para enviar mensagem no Telegram
 function sendTelegramMessage(submissionData, notificationText) {
-    console.log('sendTelegramMessage:');
-    console.log('notificationText:', notificationText);
+    // console.log('sendTelegramMessage:');
+    // console.log('notificationText:', notificationText);
     // const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 
     // bot.sendMessage(formData.telegramChatId, notificationText)
