@@ -4,15 +4,13 @@ FROM python:3.12-slim
 # Define o diretório de trabalho no container
 WORKDIR /app
 
-# Cria uma nova pasta chamada 'new_directory' dentro de /app
-RUN mkdir -p /app/dirty_data
-RUN mkdir -p /app/data
-
 # Copia os arquivos do python_module para o container
-COPY  main.py ./
-COPY .env ./
 COPY  server server/
 COPY  requirements.txt ./
+
+# Cria uma nova pasta chamada 'new_directory' dentro de /app
+RUN mkdir -p /app/server/dirty_data
+RUN mkdir -p /app/server/data
 
 # Instala as dependências especificadas em requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
@@ -21,4 +19,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5001
 
 # Define o comando para rodar o servidor Flask
-CMD ["python", "main.py"]
+CMD ["python", "server/main.py"]

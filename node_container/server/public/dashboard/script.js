@@ -4,7 +4,7 @@ const marketPriceChart = document.getElementById('marketPriceChart').getContext(
 
 // Função para carregar a lista de produtos
 function loadProducts() {
-    fetch('/products')
+    fetch('/api/products')
     .then(response => response.json())
     .then(products => {
         products.forEach(product => {
@@ -32,7 +32,7 @@ function parseTimestamp(timestamp) {
 // Função para atualizar o gráfico com os dados do produto selecionado
 function updateChart(productKey) {
     if (productKey) {
-    fetch(`/chartData/${encodeURIComponent(productKey)}`)
+    fetch(`/api/chartData/${encodeURIComponent(productKey)}`)
         .then(response => response.json())
         .then(chartData => {
         const labels = chartData.map(data => parseTimestamp(data.time));

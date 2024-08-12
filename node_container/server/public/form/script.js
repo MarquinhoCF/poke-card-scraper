@@ -121,7 +121,7 @@ form.addEventListener('submit', (event) => {
 
         console.log('Dados do formulário:', formData);
 
-        fetch('/notify', {
+        fetch('/api/notify', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

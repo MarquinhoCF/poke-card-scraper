@@ -1,16 +1,13 @@
 import os
-from dotenv import load_dotenv
+from app.config.env import STORE_DATA_ENDPOINT, DIRTY_DATA_DIR, PROCESSED_DATA_DIR
 from .html_extraction import extract_data_from_html
 from .file_handling import save_data
 from .statistics import get_statistics
 from .network import send_data_to_endpoint_in_chunks
 
-# Carrega as variáveis do arquivo .env
-load_dotenv()
-url_node_server = os.getenv('URL_NODE_SERVER')
 
 def process_html_files(timestamp):
-    dir_path = os.path.join(os.path.join(os.path.dirname(__file__), '..', '..', 'dirty_data'), timestamp)
+    dir_path = os.path.join(DIRTY_DATA_DIR, timestamp)
     all_data = []
     
     if not os.path.isdir(dir_path):
@@ -25,10 +22,10 @@ def process_html_files(timestamp):
             all_data.extend(data)
     
     dataToSend = remove_duplicates(all_data)
-    output_file = f'./data/{timestamp}.json'
+    output_file = os.path.join(PROCESSED_DATA_DIR, f'{timestamp}.json')
     save_data(dataToSend, filename=output_file)
     get_statistics(dataToSend)
-    send_data_to_endpoint_in_chunks(dataToSend, timestamp, url_node_server)
+    send_data_to_endpoint_in_chunks(dataToSend, timestamp, STORE_DATA_ENDPOINT)
 
 def remove_duplicates(data):
     unique_items = []
