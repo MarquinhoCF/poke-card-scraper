@@ -117,7 +117,6 @@ main {
 }
 
 .form-content input,
-.form-content textarea,
 .form-content select {
     display: block;
     width: 100%;
@@ -152,8 +151,16 @@ main {
     display: block;
 }
 
+.row-select {
+    display: flex;
+    gap: 20px; /* Espaçamento entre os selects */
+}
+
+.row-select .form-content {
+    flex: 1; /* Faz com que os selects ocupem o mesmo espaço */
+}
+
 .form-content.error input,
-.form-content.error textarea,
 .form-content.error select {
     border-color: #ff3b25;
 }

@@ -29,62 +29,84 @@
         <div class="container">
             <section class="form-header">
                 <img src="../assets/pokemon_tcg.png" alt="Pokemon Trading Card Game logo">
-                <h2>Faça o scrap dos dados da Carta</h2>
+                <h2>Faça o scrap dos dados do produto TCG</h2>
             </section>
 
             <div class="form-wrapper">
                 <form id="form" class="form" action="POST">
-                    <h3>Preencha os dados da carta:</h3>
+                    <h3>Preencha os dados do produto, para receber notificações:</h3>
 
                     <div class="form-content">
-                        <label for="name">Nome da Carta</label>
+                        <label for="title">Título do Produto</label>
                         <input 
                             type="text"
-                            name="name"
-                            id="name"
-                            placeholder="Digite o nome da carta"
+                            name="title"
+                            id="title"
+                            placeholder="Digite o título do produto"
                         />
                         <small>Aqui vai a mensagem de erro...</small>
                     </div>
-    
+
                     <div class="form-content">
-                        <label for="pre-evolution">Evolui de:</label>
-                        <input 
-                            type="text"
-                            name="pre-evolution"
-                            id="pre-evolution"
-                            placeholder="Digite a pré-evolução da carta"
-                        />
-                        <small>Aqui vai a mensagem de erro...</small>
-                    </div>
-    
-                    <div class="form-content">
-                        <label for="type">Tipo da Carta</label>
-                        <select name="type" id="type">
-                            <option value="" disabled selected>Selecione o tipo</option>
-                            <option value="fire">Fogo</option>
-                            <option value="water">Água</option>
-                            <option value="grass">Grama</option>
-                            <option value="electric">Elétrico</option>
-                            <option value="psychic">Psíquico</option>
-                            <option value="fighting">Lutador</option>
-                            <option value="darkness">Noturno</option>
-                            <option value="metal">Metálico</option>
-                            <option value="colorless">Normal</option>
-                            <option value="fairy">Fada</option>
-                            <option value="dragon">Dragão</option>
+                        <label for="set">Coleção</label>
+                        <select name="set" id="set">
+                            <option value="" disabled selected>Selecione a coleção</option>
+                            <option value="SV: Scarlet & Violet 151">SV: Scarlet & Violet 151</option>
+                            <option value="SM Base Set">SM Base Set</option>
+                            <option value="SWSH01: Sword & Shield Base Set">SWSH01: Sword & Shield Base Set</option>
+                            <option value="XY - Evolutions">XY - Evolutions</option>
+                            <option value="XY Base Set">XY Base Set</option>
+                            <option value="Legendary Collection">Legendary Collection</option>
                         </select>
                         <small>Aqui vai a mensagem de erro...</small>
                     </div>
+                    
+                    <div class="row-select">
+                        <div class="form-content">
+                            <label for="rarity">Raridade da Carta</label>
+                            <select name="rarity" id="rarity">
+                                <option value="" disabled selected>Selecione a raridade</option>
+                                <option value="Common">Comum</option>
+                                <option value="Uncommon">Incomum</option>
+                                <option value="Double Rare">Duplo Raro</option>
+                                <option value="Hyper Rare">Hiper Raro</option>
+                                <option value="Ultra Rare">Ultra Raro</option>
+                                <option value="Secret Rare">Secreto Raro</option>
+                                <option value="Holo Rare">Holo Raro</option>
+                                <option value="Illustration Rare">Ilustração Rara</option>
+                                <option value="Special Illustration Rare">Ilustração Especial Rara</option>
+                                <option value="Rare BREAK">Raro BREAK</option>
+                                <option value="Code Card">Carta de Código</option>
+                            </select>
+                            <small>Aqui vai a mensagem de erro...</small>
+                        </div>
+                        <div class="form-content">
+                            <label for="condition">Condição da Carta</label>
+                            <select name="condition" id="condition">
+                                <option value="" disabled selected>Selecione a condição</option>
+                                <option value="Near Mint">Quase Novo</option>
+                                <option value="Near Mint Holofoil">Holofoil Quase Novo</option>
+                                <option value="Near Mint Reverse Holofoil">Holofoil Reverso Quase Novo</option>
+                                <option value="Lightly Played">Levemente Usado</option>
+                                <option value="Lightly Played Holofoil">Holofoil Levemente Usado</option>
+                                <option value="Lightly Played Reverse Holofoil">Holofoil Reverso Levemente Usado</option>
+                                <option value="Moderately Played">Moderadamente Usado</option>
+                                <option value="Moderately Played Holofoil">Holofoil Moderadamente Usado</option>
+                                <option value="Moderately Played Reverse Holofoil">Holofoil Reverso Moderadamente Usado</option>
+                                <option value="Heavily Played">Bastante Usado</option>
+                                <option value="Heavily Played Holofoil">Holofoil Bastante Usado</option>
+                                <option value="Heavily Played Reverse Holofoil">Holofoil Reverso Bastante Usado</option>
+                                <option value="Damaged">Danificado</option>
+                                <option value="Damaged Holofoil">Holofoil Danificado</option>
+                                <option value="Damaged Reverse Holofoil">Holofoil Reverso Danificado</option>
+                            </select>
+                            <small>Aqui vai a mensagem de erro...</small>
+                        </div>
+                    </div>
     
                     <div class="form-content">
-                        <label for="text">Texto da Carta</label>
-                        <textarea 
-                            name="text" 
-                            id="text"
-                            placeholder="Digite o texto da carta"
-                            rows="4"
-                        ></textarea>
+                        <label for="price">Preço Máximo ($):</label>
+                        <input type="number" id="price" name="price" placeholder="Digite o preço máximo em dólares" min="0" max="1000.00" step="0.01">
                         <small>Aqui vai a mensagem de erro...</small>
                     </div>
 
@@ -112,10 +134,6 @@
                         <div class="checkbox">
                             <input type="checkbox" id="sms-checkbox" name="notification-checkbox" value="sms">
                             <label for="sms-checkbox">SMS</label>
-                        </div>
-                        <div class="checkbox">
-                            <input type="checkbox" id="telegram-checkbox" name="notification-checkbox" value="telegram">
-                            <label for="telegram-checkbox">Telegram</label>
                         </div>
                         <small>Aqui vai a mensagem de erro...</small>
                     </div>

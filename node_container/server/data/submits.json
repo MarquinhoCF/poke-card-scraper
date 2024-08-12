@@ -8,6 +8,17 @@
     "userName": "Marcos",
     "notificationsMethods": "SMS",
     "email": "",
-    "phone": "+55 35 98824-4841"
+    "phone": "+5535988244841"
+  },
+  {
+    "title": "Mew",
+    "set": "SV: Scarlet & Violet 151",
+    "rarity": "Double Rare",
+    "condition": null,
+    "price": 4,
+    "userName": "Marquin",
+    "notificationsMethods": "E-mail",
+    "email": "marcos13cf@gmail.com",
+    "phone": ""
   }
 ]

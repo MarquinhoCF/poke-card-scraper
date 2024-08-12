@@ -1,13 +1,15 @@
-// Elementos referentes aos Dados da Carta TCG
+// Elementos referentes aos produtos Pokemon TCG
 const form = document.getElementById('form');
-const name = document.getElementById('name');
-const preEvolution = document.getElementById('pre-evolution');
-const type = document.getElementById('type');
-const text = document.getElementById('text');
+const title = document.getElementById('title');
+const set = document.getElementById('set');
+const rarity = document.getElementById('rarity');
+const condition = document.getElementById('condition');
+const price = document.getElementById('price');
 
 // Elementos referentes ao Usuário
 const username = document.getElementById('username');
 const email = document.getElementById('email');
+const countryCode = document.getElementById('country-code');
 const phone = document.getElementById('phone');
 
 // Elemento que envolve as checkboxes e campos de notificação
@@ -36,12 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Atualiza os campos de notificação quando as checkboxes são marcadas
 function updateNotificationFields() {
-    const anyChecked = emailCheckbox.checked || smsCheckbox.checked || telegramCheckbox.checked;
-    const anyCheckedPhone = smsCheckbox.checked || telegramCheckbox.checked;
+    const anyChecked = emailCheckbox.checked || smsCheckbox.checked;
     
     toggleDisplay(notificationFields, anyChecked);
     toggleDisplay(emailField, emailCheckbox.checked);
-    toggleDisplay(phoneField, anyCheckedPhone);
+    toggleDisplay(phoneField, smsCheckbox.checked);
 }
 
 // Mostra e esconde o input conforme valor da checkbox e reseta o input
@@ -93,26 +94,44 @@ function formatUSPhone(value) {
     return value.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3').slice(0, 12);
 }
 
+// Formata o valor do input para número
+function formatToNumber(value) {
+    // Remove os pontos que são separadores de milhar
+    let number = value.replace(/\./g, '');
+
+    // Substitui a vírgula pelo ponto, para converter o separador decimal
+    number = number.replace(',', '.');
+
+    return parseFloat(number);
+}
+
+function handleEmptyValue(value) {
+    return value === "" ? null : value;
+}
+
+
 // Evento para checar os valores do input ao submeter o formulário
 form.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const nameValue = name.value.trim();
-    const preEvolutionValue = preEvolution.value.trim();
-    const typeValue = type.value;
-    const textValue = text.value.trim();
+    const titleValue = title.value.trim();
+    const setValue = set.value;
+    const rarityValue = rarity.value;
+    const conditionValue = condition.value;
+    const priceValue = formatToNumber(price.value.trim());
     const usernameValue = username.value.trim();
     const emailValue = email.value.trim();
-    const phoneValue = phone.value.trim();
+    const phoneValue = countryCode.value + phone.value.trim();
 
-    if (checkInputs(nameValue, preEvolutionValue, typeValue, textValue, usernameValue, emailValue, phoneValue)) {
+    if (checkInputs(usernameValue, emailValue, phoneValue)) {
         console.log('Formulário válido!');
         
         const formData = {
-            name: nameValue,
-            preEvolution: preEvolutionValue,
-            type: typeValue,
-            text: textValue,
+            title: handleEmptyValue(titleValue),
+            set: handleEmptyValue(setValue),
+            rarity: handleEmptyValue(rarityValue),
+            condition: handleEmptyValue(conditionValue),
+            price: priceValue || null,
             userName: usernameValue,
             notificationsMethods: getCheckedNotifications(),
             email: emailValue,
@@ -141,14 +160,10 @@ form.addEventListener('submit', (event) => {
 });
 
 // Verifica os inputs do formulário
-function checkInputs(nameValue, preEvolutionValue, typeValue, textValue, usernameValue, emailValue, phoneValue) {
+function checkInputs(usernameValue, emailValue, phoneValue) {
     let isValid = true;
-    const anyChecked = emailCheckbox.checked || smsCheckbox.checked || telegramCheckbox.checked;
+    const anyChecked = emailCheckbox.checked || smsCheckbox.checked;
     
-    isValid &= validateInput(name, nameValue, 'Nome não pode estar em branco');
-    isValid &= validateInput(preEvolution, preEvolutionValue, 'Pré-evolução não pode estar em branco');
-    isValid &= validateInput(type, typeValue, 'Tipo não pode estar em branco');
-    isValid &= validateInput(text, textValue, 'Texto da carta não pode estar em branco');
     isValid &= validateInput(username, usernameValue, 'Nome de usuário não pode estar em branco');
     isValid &= validateCheckboxes(anyChecked);
     isValid &= validateNotificationFields(anyChecked, emailValue, phoneValue);
@@ -243,6 +258,5 @@ function getCheckedNotifications() {
     const methods = [];
     if (emailCheckbox.checked) methods.push('E-mail');
     if (smsCheckbox.checked) methods.push('SMS');
-    if (telegramCheckbox.checked) methods.push('Telegram');
     return methods.join(', ');
 }
