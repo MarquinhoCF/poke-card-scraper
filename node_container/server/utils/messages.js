@@ -30,7 +30,7 @@ function getHtmlFromProduct(product) {
             <p>Nome do vendedor: ${listing.seller}</p>
             <p>Condição do produto: ${translateCondition(listing.condition)}</p>
             <p>Preço (dólares): $${listing.price}</p>
-            <p>Preço do frete (dólares): $${listing.shipping}</p>`;
+            <p>Preço do frete (US): $${listing.shipping}</p>`;
         });
         productHtml += `</div>`;
     } else {

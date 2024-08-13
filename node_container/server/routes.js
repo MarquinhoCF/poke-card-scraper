@@ -11,5 +11,7 @@ router.post('/notify', submissionController.notify);
 // Product routes
 router.get('/products', productController.getProducts);
 router.get('/chartData/:productKey', productController.getProductChartData);
+router.get('/product/:productKey', productController.getProduct);
+router.get('/data/lastTimestamp', productController.getLastTimestamp);
 
 module.exports = router;

@@ -10,13 +10,65 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <h1>Dashboard</h1>
-        <select id="productSelect">
-            <option value="" selected>Selecione um Produto Pokemon TCG</option>
-        </select>
-        <canvas id="marketPriceChart"></canvas>
+        <header>
+            <nav>
+                <a class="logo" href="http://localhost:3000/form/">Pokemon Card - Scraper</a>
+                <ul class="nav-list">
+                    <li><a href="http://localhost:3000/form/">Notificação</a></li>
+                    <li><a href="http://localhost:3000/dashboard/">Dashboard</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div class="container">
+                <section class="container-header">
+                    <img src="../assets/pokemon_tcg.png" alt="Pokemon Trading Card Game logo">
+                    <h1>Dashboard</h1>
+                </section>
+                <div class="container-content">
+                    <h2>Selecione um produto Pokemon TCG para acompanhar o preço de mercado:</h2>
+                    <div class="select-product">
+                        <select id="productSelect">
+                            <option value="" disabled selected>Selecione um Produto Pokemon TCG</option>
+                        </select>
+                    </div>
+
+                    <div id="scrapTimeIndicator" class="timestamp-indicator">
+                        <img src="../assets/pikachu-correndo.gif" alt="Animação do Pikachu correndo">
+                        <p>Última raspagem realizada em <span id="scrapTime">carregando...</span></p>
+                    </div>
+
+                    <div id="productInfo" class="product-info">
+                        <section class="product-header">
+                            <h3 id="productTitle"></h3>
+                        </section>
+                        <div id="productDetails" class="product-details" style="display: none;">
+                            <div class="product-atributes">
+                                <p id="productSet"></p>
+                                <p id="productRarity"></p>
+                                <p id="productNumber"></p>
+                                <p id="productPrice"></p>
+                            </div>
+                            <p><a id="productLink" href="" target="_blank">Acessar Produto na loja TCG Player</a></p>
+                            <h4 id="topListingTitle"></h4>
+                            <div id="topListings" class="top-listings"></div>
+                        </div>
+                        <div class="chart">
+                            <h4>Gráfico do Preço de Mercado em função do tempo</h4>
+                            <canvas id="marketPriceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <nav>
+                <p>© 2024 Pokemon TCG Scraper. Todos os direitos reservados.</p>
+            </nav>
+        </footer>
 
         <script src="script.js"></script>
     </body>

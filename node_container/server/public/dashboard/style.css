@@ -1,0 +1,264 @@
+/* RESET DO CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* NAVBAR */
+a {
+    color: #FFF;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+a:hover {
+    opacity: 0.7;
+}
+
+.logo {
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #23232e;
+    height: 8vh;
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+}
+
+.nav-list li {
+    letter-spacing: 2px;
+    margin-left: 32px;
+    color: #FFF;
+}
+
+/* FOOTER */
+
+footer p {
+    text-align: center;
+    color: #FFF;
+}
+
+/* PRINCIPAL */
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #14456B;
+}
+
+/* CONTAINER */
+
+.container {
+    background-color: #FAFAFA;
+    border-radius: 14px;
+    margin: 14px;
+    max-width: 1400px;
+    width: 100%;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.container-header {
+    background: linear-gradient(120deg, #3acbf0 0%, #0A7090 100%);
+    padding: 24px;
+    color: #FFF;
+    box-sizing: border-box;
+}
+
+.container-header img {
+    width: 150px;
+    margin: 0 auto 10px auto;
+    display: block;
+}
+
+.container-header h1 {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.container-content {
+    padding: 20px;
+}
+
+.container-content h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #0A7090;
+}
+
+/* DROP DOWN BUTTON */
+
+.select-product select {
+    display: block;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    border: 2px solid #DFDFDF;
+}
+
+/* PRODUCT INFO */
+.product-info {
+    display: none; /* Inicialmente escondido */
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    max-width: 1300px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+/* PRODUCT HEADER */
+.product-header {
+    background-color: #14456B;
+    padding: 20px;
+    color: #FFF;
+    text-align: center;
+    width: 100%;
+    border-radius: 8px 8px 0 0;
+}
+
+.product-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* PRODUCT DETAILS */
+.product-details {
+    padding: 20px;
+    width: 100%;
+}
+
+.product-details p {
+    margin: 10px 0;
+    text-align: center;
+    font-size: 16px;
+}
+
+.product-details a {
+    color: #14456B;
+    text-weight: bold;
+}
+
+.product-details a:hover {
+    text-decoration: underline;
+}
+
+.product-details h4 {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.available-sellers {
+    color: #14456B;
+}
+
+.out-of-stock {
+    color: #000000;
+}
+
+/* PRODUCT ATRIBUTES */
+.product-atributes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    text-align: center;
+}
+
+.product-atributes strong {
+    color: #14456B;
+}
+
+/* TOP LISTINGS */
+
+.top-listings {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.listing {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #3acbf0;
+    border: 1px solid #14456B;
+    border-radius: 6px;
+}
+
+.listing h4,
+.listing p {
+    margin: 5px;
+    flex: 1; /* Distribui o espaço igualmente entre os elementos */
+    text-align: center; /* Centraliza o texto em cada elemento */
+}
+
+.listing h4 {
+    font-size: 18px;
+    color: #000;
+}
+
+.listing p {
+    font-size: 16px;
+    color: #000;
+}
+
+/* CANVAS */
+
+.chart {
+    width: 100%;
+    max-width: 1400px;
+}
+
+.chart h4 {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #14456B;
+    text-align: center;
+}
+
+.chart canvas {
+    padding: 20px;
+}
+
+/* TIMESTAMP INDICATOR */
+
+.timestamp-indicator{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto 70px;
+}
+
+.timestamp-indicator img {
+    display: block;
+    max-width: 300px;
+    width: 100%;
+}

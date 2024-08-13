@@ -114,6 +114,22 @@ exports.readHistoryData = () => {
   });
 };
 
+exports.readData = () => {
+  const dataFilePath = path.join(dataDir, 'data.json');
+
+  return fs.pathExists(dataFilePath)
+  .then((exists) => {
+    if (!exists) {
+      throw new Error('O arquivo data.json não foi encontrado.');
+    }
+    return fs.readJson(dataFilePath);
+  })
+  .catch((err) => {
+    console.error('Erro ao acessar o arquivo data.json:', err.message);
+    throw err;
+  });
+};
+
 exports.getLatestTimestamp = () => {
   const dataFilePath = path.join(dataDir, 'data.json');
 

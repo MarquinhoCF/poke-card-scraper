@@ -3,7 +3,7 @@ function formatTimestamp(timestamp) {
     const [year, month, day] = datePart.split('-').map(Number);
     const [hours, minutes, seconds] = timePart.split('-').map(Number);
 
-    return `${hours}:${minutes} da data ${day}/${month}/${year}`;
+    return `${hours}:${minutes} de ${day}/${month}/${year}`;
 }
 
 function formatPhoneNumber(phoneNumber) {

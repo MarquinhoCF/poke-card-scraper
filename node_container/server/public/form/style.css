@@ -37,6 +37,15 @@ nav {
 }
 
 .nav-list li {
+    letter-spacing: 2px;
+    margin-left: 32px;
+    color: #FFF;
+}
+
+/* FOOTER */
+
+footer p {
+    text-align: center;
     color: #FFF;
 }
 
@@ -46,7 +55,7 @@ main {
         linear-gradient(rgba(35, 35, 46, 0.7), rgba(35, 35, 46, 0.7)),
         url("../assets/bg.jpg") no-repeat center center;
     background-size: cover;
-    height: 92vh;
+    height: 88vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,7 +76,7 @@ main {
     width: 100%;
     box-shadow: 0 5px 8px rgba(0, 0, 0, 0.5);
     overflow: hidden;
-    max-height: 85vh;
+    max-height: 82vh;
 }
 
 .form-header {
@@ -145,9 +154,7 @@ main {
     border: 0;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 35px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 35px auto 20px;
     display: block;
 }
 
