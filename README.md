@@ -14,15 +14,15 @@ Acesso ao dashboard: [link](http://localhost:8000/dashboard/)
 
 2. **Limpeza de Dados com Python [X]**
    - **Descrição:** Scripts Python para limpeza e preparação dos dados extraídos.
-   - **Solução:** Criei um Servidor `Python Flask` para lidar com processo de limpeza de dados utilizando a biblioteca `BeautifulSoup`. Após a extração, o script usa o `BeautifulSoup` para analisar e extrair informações relevantes do HTML. Os dados limpos são estruturados em um arquivo json salvos e enviados ao servidor NodeJS via requisição HTTP para análise posterior.
+   - **Solução:** Criei um Servidor `Python Flask` para lidar com processo de limpeza de dados utilizando a biblioteca `BeautifulSoup`. Após a extração feita pelo `Selenium`, o script usa o `BeautifulSoup` para analisar e extrair informações relevantes do HTML salvo no diretório `dirty_data`.
 
 3. **Envio de Conjunto de Dados para o Servidor Node [X]**
    - **Descrição:** Criação e envio de um conjunto de dados para um servidor Node.js.
-   - **Solução:** Desenvolvido um servidor Python para extrair dados dos jogadores, salvar como `players_data.csv` e enviar para um endpoint do servidor Node.js (`http://node_server_pokemon_tcg:3000/api/storeData`).
+   - **Solução:** Desenvolvido um servidor Python para extrair dados dos produtos TCG, salvar como json e enviar para um endpoint do servidor Node.js (`http://node_server_pokemon_tcg:3000/api/storeData`).
 
 4. **Exibição de Gráficos no Servidor Node [X]**
    - **Descrição:** Geração e exibição de gráficos a partir dos dados.
-   - **Solução:** Implementado um endpoint `/dashboard` para servir o `dashboard.html` do diretório `public/dashboard`. O arquivo HTML inclui um dropdown `<select>` para seleção de jogadores e um elemento `<canvas>` para exibição de gráficos usando o Chart.js. O endpoint `/products` lista os produtos TCG disponíveis e o `/chartData/:productKey` fornece dados para o produto selecionado. Os gráficos são atualizados em tempo real com base na seleção do produto.
+   - **Solução:** Implementado um endpoint `/dashboard` para servir o `dashboard.html` do diretório `public/dashboard`. O arquivo HTML inclui um dropdown `<select>` para seleção de produtos TCG e um elemento `<canvas>` para exibição de gráficos usando o Chart.js. O endpoint `/products` lista os produtos TCG disponíveis e o `/chartData/:productKey` fornece dados para o produto selecionado. Os gráficos são atualizados em tempo real com base na seleção do produto.
 
 5. **Notificações para Clientes [X]**
    - **Descrição:** Registro de eventos do cliente e notificações.
