@@ -30,4 +30,26 @@ This repository implements a **Notification and Data Analysis System** for the G
 - **Python Module**: Scripts for scraping and cleaning data.
 - **Node.js Server Module**: Node.js server to receive data, display charts, and manage notifications.
 
-Este é o repositório para o projeto da disciplina de Sistemas Distribuídos. O projeto consiste em um sistema que realiza um web scrap dos dados de cartas de Pokemon TCG para compor um dataset, realizar data cleaning, gerar gráficos e notificar os usuários.
+
+Como executar o sistema:
+
+cd scrape
+python scrape.py
+
+Abrir outro terminal
+
+cd node_container
+docker build -t pokemon-tcg-scraper-node-server .
+
+cd ..
+
+cd python_container
+docker build -t data-cleaning-server-python .
+
+docker network create my_network    
+
+docker run -it --name node_server_pokemon_tcg --network my_network -p 8000:3000  --name pokemon-tcg-scraper-server pokemon-tcg-scraper-node-server
+
+Abrir outro terminal
+
+docker run -it -p 6000:5001 -v C:/poke-card-scraper/scrape/dirty_data:/app/server/dirty_data --network my_network --name data-cleaning-server data-cleaning-server-python

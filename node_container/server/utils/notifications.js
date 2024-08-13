@@ -1,4 +1,4 @@
-const formatPhoneNumber = require('./format');
+const { formatPhoneNumber } = require('./format');
 const transport = require('../config/smtp');
 const client = require('../config/twilio');
 const { createNotificationText, createNotificationHtml } = require('./messages');

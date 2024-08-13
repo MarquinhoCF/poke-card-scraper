@@ -18,7 +18,6 @@ const formCheckboxes = document.getElementById('form-checkboxes');
 // Elementos referentes às checkboxes de notificação
 const emailCheckbox = document.getElementById('email-checkbox');
 const smsCheckbox = document.getElementById('sms-checkbox');
-const telegramCheckbox = document.getElementById('telegram-checkbox');
 
 // Elemento que envolve os campos de notificação
 const notificationFields = document.getElementById('notification-container');
@@ -32,7 +31,6 @@ const countryCodeSelect = document.getElementById('country-code');
 document.addEventListener('DOMContentLoaded', () => {
     emailCheckbox.addEventListener('change', updateNotificationFields);
     smsCheckbox.addEventListener('change', updateNotificationFields);
-    telegramCheckbox.addEventListener('change', updateNotificationFields);
     phone.addEventListener('input', handlePhoneInput);
 });
 
@@ -201,7 +199,7 @@ function validateNotificationFields(anyChecked, emailValue, phoneValue) {
         if (emailCheckbox.checked) {
             isValid &= validateInput(email, emailValue, 'E-mail não pode estar em branco');
         }
-        if (smsCheckbox.checked || telegramCheckbox.checked) {
+        if (smsCheckbox.checked) {
             isValid &= validateInput(phone.parentElement, phoneValue, 'Telefone não pode estar em branco');
             if (isValid) {
                 isValid &= validatePhoneNumber();

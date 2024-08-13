@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const { port, dataDir } = require('./config/env');
+const { port } = require('./config/env');
 const routes = require('./routes.js');
 require('./cron/tasks');
 

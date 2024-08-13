@@ -5,8 +5,7 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Copia os arquivos do python_module para o container
-COPY  server server/
-COPY  requirements.txt ./
+COPY  . .
 
 # Cria uma nova pasta chamada 'new_directory' dentro de /app
 RUN mkdir -p /app/server/dirty_data

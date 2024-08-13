@@ -77,7 +77,6 @@ function translateCondition(condition) {
     }
 }
 
-
 module.exports = {
     formatTimestamp,
     formatPhoneNumber,

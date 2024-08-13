@@ -3,3 +3,4 @@
 node_container/node_modules/
 node_container/server/.env
 scrape/dirty_data/*
+scrape/venv/

@@ -1,24 +1,13 @@
 [
   {
-    "title": "Pikachu",
-    "set": "XY - Evolutions",
-    "rarity": "Common",
-    "condition": "Near Mint",
-    "price": 0.5,
-    "userName": "Marcos",
-    "notificationsMethods": "SMS",
-    "email": "",
-    "phone": "+5535988244841"
-  },
-  {
-    "title": "Mew",
-    "set": "SV: Scarlet & Violet 151",
-    "rarity": "Double Rare",
+    "title": "Lillipup",
+    "set": null,
+    "rarity": null,
     "condition": null,
-    "price": 4,
-    "userName": "Marquin",
+    "price": null,
+    "userName": "Giovana",
     "notificationsMethods": "E-mail",
-    "email": "marcos13cf@gmail.com",
-    "phone": ""
+    "email": "gigioliver43@gmail.com",
+    "phone": "+55"
   }
 ]

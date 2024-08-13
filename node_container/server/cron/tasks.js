@@ -38,7 +38,7 @@ cron.schedule('*/1 * * * *', () => {
         // console.log(`Produtos filtrados para a requisição de teste ${index + 1}:`, filteredResults);
       })
       .catch((err) => {
-        console.error(`Erro ao filtrar produtos para a requisição de teste ${index + 1}:`, err.message);
+        console.error(`Erro ao filtrar produtos para a requisição de teste ${index + 1}:`, err);
       });
   });
 });

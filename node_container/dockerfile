@@ -1,11 +1,17 @@
+# Utiliza uma imagem base oficial do Node
 FROM node:latest
 
+# Define o diretório de trabalho no container
 WORKDIR /app
 
+# Copia os arquivos do node_container para o container
 COPY . .
 
+# Instala as dependências especificadas em package.json
 RUN npm install
 
+# Exponha a porta que o servidor Node utilizará
 EXPOSE 3000
 
-ENTRYPOINT ["node", "server/app.js"]
+# Define o comando para rodar o servidor Node
+CMD ["node", "server/app.js"]

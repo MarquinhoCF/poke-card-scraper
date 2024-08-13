@@ -1,11 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Elemento do indicador de tempo de raspagem
     const scrapTimeIndicator = document.getElementById('scrapTimeIndicator');
     const scrapTimeText = document.getElementById('scrapTime');
 
+    // Elemento do seletor de produtos
     const productSelect = document.getElementById('productSelect');
 
+    // Elemento do gráfico de preços de mercado
     const marketPriceChart = document.getElementById('marketPriceChart').getContext('2d');
 
+    // Elementos da seção de informações do produto
     const productInfo = document.getElementById('productInfo');
     const productDetails = document.getElementById('productDetails');
     const productTitle = document.getElementById('productTitle');
@@ -37,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Função para formatar o timestamp em partes de data e hora
     function formatDateTimeParts(timestamp) {
         const [datePart, timePart] = timestamp.split('_');
         const [year, month, day] = datePart.split('-').map(Number);
@@ -45,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return { year, month, day, hours, minutes, seconds };
     }
     
+    // Função para formatar o timestamp em uma string legível para o gráfico
     function parseTimestamp2Chart(timestamp) {
         const { day, month, hours, minutes } = formatDateTimeParts(timestamp);
         
@@ -55,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${formattedDate}: ${formattedTime}`;
     }
     
+    // Função para formatar o timestamp em uma string legível para o indicador de tempo
     function parseTimestamp2Indicator(timestamp) {
         const { year, month, day, hours, minutes } = formatDateTimeParts(timestamp);
         
@@ -158,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     productRarity.innerHTML = `<strong>Raridade:</strong> ${translateRarity(product.rarity)}`;
                 else
                     productRarity.style.display = 'none';
-                
+
                 let number = product.number;
                 if (number)
                     productNumber.innerHTML = `<strong>Número:</strong> ${product.number}`;

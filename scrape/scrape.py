@@ -57,7 +57,7 @@ def save_html(html_content, folder_path, page_num):
         print(f"Erro ao salvar o HTML: {e}")
 
 def notify_server(timestamp):
-    url = "http://localhost:5001/cleanData"
+    url = "http://localhost:6000/cleanData"
     headers = {'Content-Type': 'application/json'}
     data = {"timestamp": timestamp}
     try:
