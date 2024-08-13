@@ -1,7 +1,7 @@
 const { formatPhoneNumber } = require('./format');
 const transport = require('../config/smtp');
 const client = require('../config/twilio');
-const { createNotificationText, createNotificationHtml } = require('./messages');
+const { createNotificationText, createNotificationHtml, generatePersonalizedText } = require('./messages');
 require('dotenv').config({ path: './server/.env' });
 
 // Função para enviar e-mail
@@ -15,7 +15,7 @@ function sendEmail(submissionData, notificationText) {
         from: `Pokemon TCG Scraper <${process.env.EMAIL_USER}>`,
         to: submissionData.email,
         subject: 'Notificação de Produtos Pokemon TCG Encontrados',
-        html: notificationText
+        text: notificationText
     };
 
     transport.sendMail(contentEmail)
@@ -39,16 +39,22 @@ function sendSMS(submissionData, notificationText) {
 }
 
 // Função principal para enviar notificações
-function sendNotification(submissionData, filteredResults, timestamp) {
-    if (submissionData.notificationsMethods.includes('E-mail')) {
-        const notificationHtml = createNotificationHtml(submissionData, filteredResults, timestamp);
-        console.log('Texto da notificação:', notificationHtml);
-        // sendEmail(submissionData, notificationHtml);
-    }
-    if (submissionData.notificationsMethods.includes('SMS')) {
-        const notificationText = createNotificationText(submissionData, filteredResults, timestamp);
-        console.log('Texto da notificação:', notificationText);
-        // sendSMS(submissionData, notificationText);
+async function sendNotification(submissionData, filteredResults, timestamp) {
+    try {
+        const notificationText = await generatePersonalizedText(submissionData, filteredResults, timestamp);
+
+        if (submissionData.notificationsMethods.includes('E-mail')) {
+            //const notificationHtml = createNotificationHtml(submissionData, filteredResults, timestamp);
+            //console.log('Texto da notificação:', notificationHtml);
+            sendEmail(submissionData, notificationText);
+        }
+        if (submissionData.notificationsMethods.includes('SMS')) {
+            //const notificationText = createNotificationText(submissionData, filteredResults, timestamp);
+            //console.log('Texto da notificação:', notificationText);
+            sendSMS(submissionData, notificationText);
+        }
+    } catch (error) {
+        console.error('Erro ao gerar texto da notificação:', error);
     }
 }
 

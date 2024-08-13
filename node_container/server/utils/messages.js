@@ -1,4 +1,88 @@
 const { formatTimestamp, translateCondition, translateRarity } = require('./format');
+const model = require('../config/gemini_model');
+
+async function generatePersonalizedText(submissionData, filteredResults, timestamp) {
+    let prompt = `Você trabalha numa empresa de Extração de Dados de Produtos de Pokemon Trading Card Game. 
+        Você foi encarregado de criar uma mensagem personalizada para um usuário chamado ${submissionData.userName} 
+        que deseja receber notificações sobre produtos que correspondem aos critérios de busca que ele enviou.\n`;
+
+    prompt += `Evite utilizar **** para deixar a mensagem em negrito.\n`;
+
+    prompt += `Se algum dado não estiver disponível com "N/A", não mencione sobre o dado. 
+        Exemplo: Raridade: "N/A" -->     \n`;
+
+    prompt += `Seja bastante amigável, use uma linguagem informal, use emojis e faça trocadilhos com Pokemon.\n`;
+
+    prompt += `Inclua uma saudação inicial amigável ao usuário (mencione o nome dele) e informe que uma raspagem de 
+        dados foi realizada no site TCG Player.\n`;
+
+    prompt += `Aqui estão os detalhes:\n`;
+
+    prompt += `A última raspagem de dados no site TCG Player foi realizada às ${formatTimestamp(timestamp)}. 
+        Inclua na mensagem quando foi realizada a última raspagem.\n`;
+
+    if (filteredResults.length > 0) {
+        if (filteredResults.length > 5) {
+            prompt += "Aqui estão os 5 produtos mais baratos que correspondem aos critérios de busca:\n\n";
+            for (let i = 0; i < 5; i++) {
+                prompt += `Título: ${filteredResults[i].title}\n` +
+                    `Coleção: ${filteredResults[i].set}\n` +
+                    `Raridade: ${filteredResults[i].rarity || 'N/A'}\n` +
+                    `Número: ${filteredResults[i].number || 'N/A'}\n` +
+                    `Preço de Mercado: $${filteredResults[i].market_price}\n` +
+                    `URL do produto na loja: ${filteredResults[i].product_url}\n`;
+    
+                if (filteredResults[i].top_listings.length > 0) {
+                    prompt += 'Lista do Vendedores:\n';
+                    filteredResults[i].top_listings.forEach(listing => {
+                        prompt += ` - Vendedor: ${listing.seller}\n` +
+                            `   Condição: ${listing.condition}\n` +
+                            `   Preço (dólares): $${listing.price}\n` +
+                            `   Frete (nos US): $${listing.shipping}\n`;
+                    });
+                } else {
+                    prompt += 'Produto fora de estoque\n';
+                }
+        
+                prompt += '\n';
+            }
+            prompt += `e mais outros ${filteredResults.length - 5} produtos ...\n`;
+        } else {
+            filteredResults.forEach(product => {
+                prompt += `Título: ${product.title}\n` +
+                    `Coleção: ${product.set}\n` +
+                    `Raridade: ${product.rarity || 'N/A'}\n` +
+                    `Número: ${product.number || 'N/A'}\n` +
+                    `Preço de Mercado: $${product.market_price}\n` +
+                    `URL do produto na loja: ${product.product_url}\n`;
+    
+                if (product.top_listings.length > 0) {
+                    prompt += 'Lista do Vendedores:\n';
+                    product.top_listings.forEach(listing => {
+                        prompt += ` - Vendedor: ${listing.seller}\n` +
+                            `   Condição: ${listing.condition}\n` +
+                            `   Preço (dólares): $${listing.price}\n` +
+                            `   Frete (nos US): $${listing.shipping}\n`;
+                    });
+                } else {
+                    prompt += 'Produto fora de estoque\n';
+                }
+        
+                prompt += '\n';
+            });
+        }
+    } else {
+        prompt += 'Não foi encontrado nenhum produto TCG que corresponde aos critérios.\n';
+    }
+
+    prompt += 'Inclua uma saudação amigável e mencione que uma nova lista será enviada em 24 horas. O nome do aplicativo é Pokemon TCG Scraper.';
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = await response.text();
+
+    return text;
+}
 
 function getHtmlFromProduct(product) {
     let productHtml = `
@@ -196,6 +280,7 @@ function createNotificationText(submissionData, filteredResults, timestamp) {
 }
 
 module.exports = {
+    generatePersonalizedText,
     createNotificationHtml,
     createNotificationText
 }
