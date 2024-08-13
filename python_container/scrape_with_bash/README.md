@@ -1,0 +1,7 @@
+# Justificativa para o uso do selenium ao invés de Bash
+
+Olá professor, como já havia conversado com você, ao realizar a extração do html da página `TCG Player` utilizando o comando `curl` parece que os dados sobre as cartas não carregados ou exibidos no html. Dessa forma, fui forçado a utilizar o `selenium python` para garantir que todo o conteúdo da página fosse carregado e extraído, porque nem mascarando o header com BeautifulSoup foi suficiente.
+
+O script bash `scrape.sh` realiza a extração de 118 páginas html e as salva dentro do diretório `dirty_data` e dentro de um diretório utilizando o `timestamp` como nome. 
+
+Realizei a extração da seguinte url com `curl` `https://www.tcgplayer.com/search/pokemon/product?view=list&productLineName=pokemon&setName=sv-scarlet-and-violet-151|swsh01-sword-and-shield-base-set|sm-base-set|xy-base-set|legendary-collection|xy-evolutions&page=1&inStock=true&Language=English`. Se você procurar pelo nome de classe `product-info__market-price--value` com `Ctrl+F` (ou qualquer outro nome de classe utilizado no servidor python para extração) você não encontrará nenhum elemento, dessa forma, não é possível realizar a extração dos dados dessa página em específico com bash puro.

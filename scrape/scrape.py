@@ -8,8 +8,9 @@ from selenium.webdriver.common.by import By
 import time
 from datetime import datetime
 
-# URL para raspar
-url = 'https://www.tcgplayer.com/search/pokemon/product?view=list&productLineName=pokemon&setName=sv-scarlet-and-violet-151|swsh01-sword-and-shield-base-set|sm-base-set|xy-base-set|legendary-collection|xy-evolutions&page=1&inStock=true&Language=English'
+# ------------------- DEFINIÇÃO DAS URLS -------------------
+url_python_server = "http://localhost:6000/cleanData"
+url_to_scrape = 'https://www.tcgplayer.com/search/pokemon/product?view=list&productLineName=pokemon&setName=sv-scarlet-and-violet-151|swsh01-sword-and-shield-base-set|sm-base-set|xy-base-set|legendary-collection|xy-evolutions&page=1&inStock=true&Language=English'
 
 # ---------------- CONFIGURAÇÕES DO SELENIUM ----------------
 # Configurar as opções do Chrome
@@ -57,11 +58,10 @@ def save_html(html_content, folder_path, page_num):
         print(f"Erro ao salvar o HTML: {e}")
 
 def notify_server(timestamp):
-    url = "http://localhost:6000/cleanData"
     headers = {'Content-Type': 'application/json'}
     data = {"timestamp": timestamp}
     try:
-        response = requests.post(url, json=data, headers=headers)
+        response = requests.post(url_python_server, json=data, headers=headers)
         response.raise_for_status()  # Levanta um erro para códigos de status HTTP 4xx/5xx
         print("Notificação enviada com sucesso!")
     except requests.exceptions.RequestException as e:
@@ -78,14 +78,14 @@ def job():
         folder_path = os.path.join('dirty_data', timestamp)
         os.makedirs(folder_path, exist_ok=True)
 
-        driver.get(url)
+        driver.get(url_to_scrape)
         time.sleep(10)  # Aguardar a página carregar completamente
 
         num_pages = get_page_count(driver)
 
         for page in range(1, num_pages + 1):
             print(f"Extraindo dados da página {page} de {num_pages} páginas...")
-            driver.get(re.sub(r'page=\d+', f'page={page}', url))
+            driver.get(re.sub(r'page=\d+', f'page={page}', url_to_scrape))
             time.sleep(5)  # Aguardar a página carregar completamente
 
             # Captura o HTML da página
