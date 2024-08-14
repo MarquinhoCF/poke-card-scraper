@@ -1,6 +1,7 @@
 const express = require('express');
 const submissionController = require('./controllers/submissionController');
 const productController = require('./controllers/productController');
+const dataController = require('./controllers/dataController');
 
 const router = express.Router();
 
@@ -12,6 +13,9 @@ router.post('/notify', submissionController.notify);
 router.get('/products', productController.getProducts);
 router.get('/chartData/:productKey', productController.getProductChartData);
 router.get('/product/:productKey', productController.getProduct);
-router.get('/data/lastTimestamp', productController.getLastTimestamp);
+
+// Data routes
+router.get('/data/lastTimestamp', dataController.getLastTimestamp);
+router.get('/data/statistics', dataController.getStatistics);
 
 module.exports = router;

@@ -115,6 +115,54 @@ main {
     border: 2px solid #DFDFDF;
 }
 
+/* STATISTICS CHARTS */
+
+.statistics {
+    margin: 0 50px 50px;
+}
+
+.statistics h2 {
+    margin-bottom: 20px;
+}
+
+.statistics-details {
+    display: flex;
+    justify-content: space-around; /* Distribui o espaço entre os itens */
+    padding: 20px;
+    background-color: #0A7090;
+    border: 1px solid #23232e;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.statistics-details p {
+    font-size: 16px;
+    color: #ddd;
+    font-weight: 500;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto;
+    gap: 20px; /* Espaçamento entre os elementos */
+}
+
+.chart-grid canvas {
+    width: 100%;
+    max-width: 600px; /* Ajuste a largura conforme necessário */
+    height: 100%; /* Ajuste a altura conforme necessário */
+    max-height: 400px; /* Ajuste a altura conforme necessário */
+}
+
+/* Para garantir que o último gráfico ocupe toda a largura da segunda linha */
+#conditionChart {
+    grid-column: span 2;
+    max-width: 100%;
+}
+
 /* PRODUCT INFO */
 .product-info {
     display: none; /* Inicialmente escondido */

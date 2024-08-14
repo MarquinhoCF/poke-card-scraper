@@ -15,6 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrapTimeIndicator = document.getElementById('scrapTimeIndicator');
     const scrapTimeText = document.getElementById('scrapTime');
 
+    // Elementos dos indicadores de estatísticas
+    const totalNumber = document.getElementById('totalNumber');
+    const maxMarketPrice = document.getElementById('maxMarketPrice');
+    const minMarketPrice = document.getElementById('minMarketPrice');
+
+    // Elementos dos gráficos de estatísticas
+    const setChart = document.getElementById('setChart').getContext('2d');
+    const rarityChart = document.getElementById('rarityChart').getContext('2d');
+    const conditionChart = document.getElementById('conditionChart').getContext('2d');
+
     // Elemento do seletor de produtos
     const productSelect = document.getElementById('productSelect');
 
@@ -34,22 +44,206 @@ document.addEventListener('DOMContentLoaded', () => {
     const topListings = document.getElementById('topListings');
 
     // Função para carregar a lista de produtos
-    function loadProductsAndTimestamp() {
+    function loadInitialPage() {
         fetch('/api/products')
-        .then(response => response.json())
-        .then(products => {
-            products.forEach(product => {
-                const option = document.createElement('option');
-                option.value = product;
-                option.textContent = product;
-                productSelect.appendChild(option);
+            .then(response => response.json())
+            .then(products => {
+                // Ordena os produtos em ordem alfabética
+                products.sort((a, b) => a.localeCompare(b));
+
+                // Adiciona os produtos ao <select>
+                products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product;
+                    option.textContent = product;
+                    productSelect.appendChild(option);
+                });
             });
-        });
 
         fetch('/api/data/lastTimestamp')
-        .then(response => response.json())
-        .then(data => {
-            scrapTimeText.textContent = parseTimestamp2Indicator(data.timestamp);
+            .then(response => response.json())
+            .then(data => {
+                scrapTimeText.textContent = parseTimestamp2Indicator(data.timestamp);
+            });
+
+        fetch('/api/data/statistics')
+            .then(response => response.json())
+            .then(statistics => {
+                buildStatisticsCharts(statistics);
+            });
+    }
+
+    function buildStatisticsCharts(statistics) {
+        // Atualizar os indicadores de estatísticas
+        totalNumber.textContent = statistics.totalProducts;
+        minMarketPrice.textContent = `$${statistics.minMarketPrice.toFixed(2)}`;
+        maxMarketPrice.textContent = `$${statistics.maxMarketPrice.toFixed(2)}`;
+        
+        // Ordenando os dados para Raridades
+        const sortedRarityData = Object.entries(statistics.rarityCounts)
+            .map(([rarity, count]) => [translateRarity(rarity), count])
+            .sort((a, b) => b[1] - a[1]);
+        const rarityLabels = sortedRarityData.map(item => item[0]);
+        const rarityValues = sortedRarityData.map(item => item[1]);
+
+        // Gráfico de Barras Horizontal para Raridade
+        rarityChart.chart = new Chart(rarityChart, {
+            type: 'bar',
+            data: {
+                labels: rarityLabels,
+                datasets: [{
+                    label: 'Ocorrências das Raridades',
+                    data: rarityValues,
+                    backgroundColor: 'rgba(153, 102, 255, 1)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14, // Tamanho da fonte dos rótulos do eixo Y
+                                color: '#000', // Cor dos rótulos do eixo Y
+                            }
+                        }
+                    },
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14, // Tamanho da fonte dos rótulos do eixo X
+                                color: '#000', // Cor dos rótulos do eixo X
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribuição de Raridades',
+                        font: {
+                            size: 18, // Tamanho da fonte do título
+                        },
+                        color: '#0A7090' // Cor do texto do título
+                    }
+                }
+            }
+        });
+        
+        // Ordenando os dados para Sets
+        const sortedSetData = Object.entries(statistics.setCounts).sort((a, b) => b[1] - a[1]);
+        const setLabels = sortedSetData.map(item => item[0]);
+        const setValues = sortedSetData.map(item => item[1]);
+           
+        // Gráfico de Barras Horizontal para Sets
+        setChart.chart = new Chart(setChart, {
+            type: 'bar',
+            data: {
+                labels: setLabels,
+                datasets: [{
+                    data: setValues,
+                    backgroundColor: 'rgba(75, 192, 192, 1)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14,
+                                color: '#000'
+                            }
+                        }
+                    },
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14,
+                                color: '#000'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribuição das Coleções',
+                        font: {
+                            size: 18,
+                        },
+                        color: '#0A7090'
+                    }
+                }
+            }
+        });
+
+        // Ordenando os dados para Condições
+        const sortedConditionData = Object.entries(statistics.conditionCounts)
+            .map(([condition, count]) => [translateCondition(condition), count])
+            .sort((a, b) => b[1] - a[1]);
+        const conditionLabels = sortedConditionData.map(item => item[0]);
+        const conditionValues = sortedConditionData.map(item => item[1]);
+
+        // Gráfico de Barras Horizontal para Condições
+        conditionChart.chart = new Chart(conditionChart, {
+            type: 'bar',
+            data: {
+                labels: conditionLabels,
+                datasets: [{
+                    data: conditionValues,
+                    backgroundColor: 'rgba(255, 159, 64, 1)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14,
+                                color: '#000'
+                            }
+                        }
+                    },
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14,
+                                color: '#000'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribuição das Condições',
+                        font: {
+                            size: 18,
+                        },
+                        color: '#0A7090'
+                    }
+                }
+            }
         });
     }
 
@@ -285,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Carregar a lista de produtos TCG, timestamp e configurar o evento de mudança
-    loadProductsAndTimestamp();
+    loadInitialPage();
     productSelect.addEventListener('change', () => {
         scrapTimeIndicator.style.display = 'none';
         const selectedProduct = productSelect.value;

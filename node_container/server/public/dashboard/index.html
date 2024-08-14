@@ -28,9 +28,24 @@
                     <img src="../assets/pokemon_tcg.png" alt="Pokemon Trading Card Game logo">
                     <h1>Dashboard</h1>
                 </section>
+
                 <div class="container-content">
-                    <h2>Selecione um produto Pokemon TCG para acompanhar o preço de mercado:</h2>
+                    <div class="statistics">
+                        <h2>Estatísticas Gerais do Dataset:</h2>
+                        <div class="statistics-details">
+                            <p>Total de produtos raspados: <strong id="totalNumber">carregando...</strong></p>
+                            <p>Preço mínimo encontrado: <strong id="minMarketPrice">carregando..</strong></p>
+                            <p>Preço máximo encontrado: <strong id="maxMarketPrice">carregando...</strong></p>
+                        </div>
+                        <div class="chart-grid">
+                            <canvas id="rarityChart"></canvas>
+                            <canvas id="setChart"></canvas>
+                            <canvas id="conditionChart"></canvas>
+                        </div>
+                    </div>
+
                     <div class="select-product">
+                        <h2>Selecione um produto Pokemon TCG para acompanhar o preço de mercado:</h2>
                         <select id="productSelect">
                             <option value="" disabled selected>Selecione um Produto Pokemon TCG</option>
                         </select>
