@@ -6,6 +6,7 @@ from .utils.data_processing import process_html_files, send_data_to_endpoint_in_
 
 main_bp = Blueprint('main', __name__)
 
+# Rota para limpar os dados dos arquivos HTML
 @main_bp.route('/cleanData', methods=['POST'])
 def clean_data():
     data = request.get_json()
@@ -15,11 +16,14 @@ def clean_data():
         return jsonify({'error': 'Timestamp não fornecido'}), 400
     
     try:
-        process_html_files(timestamp)
-        return jsonify({'message': 'Dados processados com sucesso'}), 200
+        if (process_html_files(timestamp)):
+            return jsonify({'message': 'Dados processados com sucesso'}), 200
+        else:
+            return jsonify({'error': f'Pasta com arquivo {timestamp}.json não encontrada'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Rota de teste para enviar os dados processados para o servidor Node.js
 @main_bp.route('/sendData2NodeServer', methods=['POST'])
 def send_data_to_node_server():
     data = request.get_json()

@@ -8,13 +8,13 @@ require('dotenv').config({ path: './server/.env' });
 function sendEmail(submissionData, notificationText) {
     if (!submissionData.email || submissionData.email.trim() === '') {
         console.log('Erro: Endereço de e-mail não definido ou vazio.');
-        return;
+        throw new Error('Endereço de e-mail não definido ou vazio.');
     }
 
     const contentEmail = {
         from: `Pokemon TCG Scraper <${process.env.EMAIL_USER}>`,
         to: submissionData.email,
-        subject: 'Notificação de Produtos Pokemon TCG Encontrados',
+        subject: 'Notificação de Produtos Pokemon TCG',
         text: notificationText
     };
 
@@ -25,6 +25,11 @@ function sendEmail(submissionData, notificationText) {
 
 // Função para enviar SMS
 function sendSMS(submissionData, notificationText) {
+    if (!submissionData.phone || submissionData.phone.trim() === '') {
+        console.log('Erro: Número de telefone não definido ou vazio.');
+        throw new Error('Número de telefone não definido ou vazio.');
+    }
+
     let phoneNumber = formatPhoneNumber(submissionData.phone);
     
     console.log('Enviando SMS para:', phoneNumber);
@@ -41,17 +46,17 @@ function sendSMS(submissionData, notificationText) {
 // Função principal para enviar notificações
 async function sendNotification(submissionData, filteredResults, timestamp) {
     try {
-        const notificationText = await generatePersonalizedText(submissionData, filteredResults, timestamp);
+        // Ordena os resultados filtrados por preço de mercado de forma crescente
+        const ordnedResults = filteredResults.sort((a, b) => a.market_price - b.market_price);
+
+        // Gera o texto personalizado da notificação
+        const notificationText = await generatePersonalizedText(submissionData, ordnedResults, timestamp);
 
         if (submissionData.notificationsMethods.includes('E-mail')) {
-            //const notificationHtml = createNotificationHtml(submissionData, filteredResults, timestamp);
-            //console.log('Texto da notificação:', notificationHtml);
-            sendEmail(submissionData, notificationText);
+            //sendEmail(submissionData, notificationText);
         }
         if (submissionData.notificationsMethods.includes('SMS')) {
-            //const notificationText = createNotificationText(submissionData, filteredResults, timestamp);
-            //console.log('Texto da notificação:', notificationText);
-            sendSMS(submissionData, notificationText);
+            // sendSMS(submissionData, notificationText);
         }
     } catch (error) {
         console.error('Erro ao gerar texto da notificação:', error);

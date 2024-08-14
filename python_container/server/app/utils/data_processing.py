@@ -1,10 +1,10 @@
 import os
+import shutil
 from app.config.env import STORE_DATA_ENDPOINT, DIRTY_DATA_DIR, PROCESSED_DATA_DIR
 from .html_extraction import extract_data_from_html
 from .file_handling import save_data
 from .statistics import get_statistics
 from .network import send_data_to_endpoint_in_chunks
-
 
 def process_html_files(timestamp):
     dir_path = os.path.join(DIRTY_DATA_DIR, timestamp)
@@ -12,7 +12,7 @@ def process_html_files(timestamp):
     
     if not os.path.isdir(dir_path):
         print(f"Pasta com timestamp '{timestamp}' não encontrada.")
-        return
+        return False
     
     for file_name in os.listdir(dir_path):
         if file_name.endswith('.html'):
@@ -26,6 +26,8 @@ def process_html_files(timestamp):
     save_data(dataToSend, filename=output_file)
     get_statistics(dataToSend)
     send_data_to_endpoint_in_chunks(dataToSend, timestamp, STORE_DATA_ENDPOINT)
+    shutil.rmtree(dir_path)
+    return True
 
 def remove_duplicates(data):
     unique_items = []

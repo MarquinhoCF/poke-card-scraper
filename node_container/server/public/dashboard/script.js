@@ -1,3 +1,15 @@
+document.getElementById('logo-link').addEventListener('click', function() {
+    window.location.href = '/form';
+});
+
+document.getElementById('notification-link').addEventListener('click', function() {
+    window.location.href = '/form';
+});
+
+document.getElementById('dashboard-link').addEventListener('click', function() {
+    window.location.href = '/dashboard/';
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     // Elemento do indicador de tempo de raspagem
     const scrapTimeIndicator = document.getElementById('scrapTimeIndicator');

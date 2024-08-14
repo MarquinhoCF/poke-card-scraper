@@ -1,7 +1,7 @@
 const { formatTimestamp, translateCondition, translateRarity } = require('./format');
 const model = require('../config/gemini_model');
 
-async function generatePersonalizedText(submissionData, filteredResults, timestamp) {
+async function generatePersonalizedText(submissionData, ordnedResults, timestamp) {
     let prompt = `Você trabalha numa empresa de Extração de Dados de Produtos de Pokemon Trading Card Game. 
         Você foi encarregado de criar uma mensagem personalizada para um usuário chamado ${submissionData.userName} 
         que deseja receber notificações sobre produtos que correspondem aos critérios de busca que ele enviou.\n`;
@@ -16,60 +16,56 @@ async function generatePersonalizedText(submissionData, filteredResults, timesta
     prompt += `Inclua uma saudação inicial amigável ao usuário (mencione o nome dele) e informe que uma raspagem de 
         dados foi realizada no site TCG Player.\n`;
 
-    prompt += `Aqui estão os detalhes:\n`;
+    prompt += `Aqui estão os detalhes dos critérios escolhidos pelo usuário:\n`;
+
+    prompt += `Título: ${submissionData.title || 'N/A'}\n` +
+        `Coleção: ${submissionData.set || 'N/A'}\n` +
+        `Raridade: ${submissionData.rarity || 'N/A'}\n` +
+        `Condição: ${submissionData.condition || 'N/A'}\n` +
+        `Preço: ${submissionData.price || 'N/A'}\n`;
+
+    prompt += `Aqui estão os detalhes dos produtos encontrados:\n`;
 
     prompt += `A última raspagem de dados no site TCG Player foi realizada às ${formatTimestamp(timestamp)}. 
         Inclua na mensagem quando foi realizada a última raspagem.\n`;
 
-    if (filteredResults.length > 0) {
-        if (filteredResults.length > 5) {
-            prompt += "Aqui estão os 5 produtos mais baratos que correspondem aos critérios de busca:\n\n";
-            for (let i = 0; i < 5; i++) {
-                prompt += `Título: ${filteredResults[i].title}\n` +
-                    `Coleção: ${filteredResults[i].set}\n` +
-                    `Raridade: ${filteredResults[i].rarity || 'N/A'}\n` +
-                    `Número: ${filteredResults[i].number || 'N/A'}\n` +
-                    `Preço de Mercado: $${filteredResults[i].market_price}\n` +
-                    `URL do produto na loja: ${filteredResults[i].product_url}\n`;
-    
-                if (filteredResults[i].top_listings.length > 0) {
-                    prompt += 'Lista do Vendedores:\n';
-                    filteredResults[i].top_listings.forEach(listing => {
-                        prompt += ` - Vendedor: ${listing.seller}\n` +
-                            `   Condição: ${listing.condition}\n` +
-                            `   Preço (dólares): $${listing.price}\n` +
-                            `   Frete (nos US): $${listing.shipping}\n`;
-                    });
-                } else {
-                    prompt += 'Produto fora de estoque\n';
-                }
-        
-                prompt += '\n';
-            }
-            prompt += `e mais outros ${filteredResults.length - 5} produtos ...\n`;
+    const formatProductDetails = (product) => {
+        let details = `Título: ${product.title}\n` +
+            `Coleção: ${product.set}\n` +
+            `Raridade: ${translateRarity(product.rarity) || 'N/A'}\n` +
+            `Número: ${product.number || 'N/A'}\n` +
+            `Preço de Mercado: $${product.market_price}\n` +
+            `URL do produto na loja: ${product.product_url}\n`;
+
+        if (product.top_listings.length > 0) {
+            details += 'Lista do Vendedores:\n';
+            details += formatListings(product.top_listings);
         } else {
-            filteredResults.forEach(product => {
-                prompt += `Título: ${product.title}\n` +
-                    `Coleção: ${product.set}\n` +
-                    `Raridade: ${product.rarity || 'N/A'}\n` +
-                    `Número: ${product.number || 'N/A'}\n` +
-                    `Preço de Mercado: $${product.market_price}\n` +
-                    `URL do produto na loja: ${product.product_url}\n`;
-    
-                if (product.top_listings.length > 0) {
-                    prompt += 'Lista do Vendedores:\n';
-                    product.top_listings.forEach(listing => {
-                        prompt += ` - Vendedor: ${listing.seller}\n` +
-                            `   Condição: ${listing.condition}\n` +
-                            `   Preço (dólares): $${listing.price}\n` +
-                            `   Frete (nos US): $${listing.shipping}\n`;
-                    });
-                } else {
-                    prompt += 'Produto fora de estoque\n';
-                }
+            details += 'Produto fora de estoque\n';
+        }
+
+        return details;
+    };
+
+    const formatListings = (listings) => {
+        return listings.map(listing => 
+            ` - Vendedor: ${listing.seller}\n` +
+            `   Condição: ${translateCondition(listing.condition)}\n` +
+            `   Preço (dólares): $${listing.price}\n` +
+            `   Frete (nos US): $${listing.shipping}\n`
+        ).join('');
+    };
+
+    if (ordnedResults.length > 0) {
+        const productsToShow = ordnedResults.slice(0, 5);
+        prompt += `Aqui estão os ${productsToShow.length} produtos mais baratos que correspondem aos critérios de busca:\n\n`;
         
-                prompt += '\n';
-            });
+        productsToShow.forEach(product => {
+            prompt += formatProductDetails(product) + '\n';
+        });
+
+        if (ordnedResults.length > 5) {
+            prompt += `e mais outros ${ordnedResults.length - 5} produtos...\n`;
         }
     } else {
         prompt += 'Não foi encontrado nenhum produto TCG que corresponde aos critérios.\n';
@@ -124,7 +120,7 @@ function getHtmlFromProduct(product) {
     return productHtml;
 }
 
-function createNotificationHtml(submissionData, filteredResults, timestamp) {
+function createNotificationHtml(submissionData, ordnedResults, timestamp) {
     let notificationHtml = `
     <!DOCTYPE html>
     <html lang="en">
@@ -184,16 +180,16 @@ function createNotificationHtml(submissionData, filteredResults, timestamp) {
             <p>Foi realizada uma raspagem de dados no site TCG Player às ${formatTimestamp(timestamp)}.</p>
             <p>O Pokemon TCG Scraper encontrou produtos que correspondem aos critérios de busca que você enviou:</p>`;
     
-    if (filteredResults.length > 0) {
-        filteredResults.sort((a, b) => parseFloat(a.market_price) - parseFloat(b.market_price));
-        if (filteredResults.length > 5) {
+    if (ordnedResults.length > 0) {
+        ordnedResults.sort((a, b) => parseFloat(a.market_price) - parseFloat(b.market_price));
+        if (ordnedResults.length > 5) {
             notificationHtml += `<p>Aqui estão os 5 produtos mais baratos que correspondem aos critérios de busca:</p>`;
             for (let i = 0; i < 5; i++) {
-                notificationHtml += getHtmlFromProduct(filteredResults[i]);
+                notificationHtml += getHtmlFromProduct(ordnedResults[i]);
             }
-            notificationHtml += `<p>e mais outros ${filteredResults.length - 5} ...</p>`;
+            notificationHtml += `<p>e mais outros ${ordnedResults.length - 5} ...</p>`;
         } else {
-            filteredResults.forEach(product => {
+            ordnedResults.forEach(product => {
                 notificationHtml += getHtmlFromProduct(product);
             });
         }
@@ -249,23 +245,23 @@ function getTextFromProduct(product) {
 }
 
 // Função para criar o texto da notificação
-function createNotificationText(submissionData, filteredResults, timestamp) {
+function createNotificationText(submissionData, ordnedResults, timestamp) {
     let notificationText = `Olá ${submissionData.userName},\n\n`;
     notificationText += `Foi realizado uma raspagem de dados no site TCG Player às ${formatTimestamp(timestamp)}\n`;
 
-    if (filteredResults.length > 0) {
+    if (ordnedResults.length > 0) {
         notificationText += `O Pokemon TCG Scraper encontrou produtos que correspondem aos critérios de busca que você enviou:\n\n`;
         // Ordene os resultados por preço de forma com que fique do menor para o maior
-        filteredResults.sort((a, b) => parseFloat(a.market_price) - parseFloat(b.market_price));
+        ordnedResults.sort((a, b) => parseFloat(a.market_price) - parseFloat(b.market_price));
         
-        if (filteredResults.length > 5) {
+        if (ordnedResults.length > 5) {
             notificationText += `Aqui estão os 5 produtos mais baratos que correspondem aos critérios de busca:\n\n`;
             for (let i = 0; i < 5; i++) {
-                notificationText += getTextFromProduct(filteredResults[i]);
+                notificationText += getTextFromProduct(ordnedResults[i]);
             }
-            notificationText += `e mais outros ${filteredResults.length - 5} ...\n\n`;
+            notificationText += `e mais outros ${ordnedResults.length - 5} ...\n\n`;
         } else {
-            filteredResults.forEach(product => {
+            ordnedResults.forEach(product => {
                 notificationText += getTextFromProduct(product);
             });
         }

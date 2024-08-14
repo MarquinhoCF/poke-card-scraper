@@ -9,7 +9,7 @@ import time
 from datetime import datetime
 
 # ------------------- DEFINIÇÃO DAS URLS -------------------
-url_python_server = "http://localhost:6000/cleanData"
+url_python_server = "http://localhost:5001/cleanData"
 url_to_scrape = 'https://www.tcgplayer.com/search/pokemon/product?view=list&productLineName=pokemon&setName=sv-scarlet-and-violet-151|swsh01-sword-and-shield-base-set|sm-base-set|xy-base-set|legendary-collection|xy-evolutions&page=1&inStock=true&Language=English'
 
 # ---------------- CONFIGURAÇÕES DO SELENIUM ----------------

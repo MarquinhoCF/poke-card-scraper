@@ -4,8 +4,8 @@
 
 Este repositório implementa um **Sistema de Notificações e Análise de Dados** para o projeto GCC129 – Sistemas Distribuídos - 2024/1. O sistema realiza a extração de dados do TCG Player, processa e limpa os dados com Python e os disponibiliza em um servidor Node.js. Além disso, inclui funcionalidades de notificação para o cliente e utiliza inteligência artificial como um bônus.
 
-Acesso ao formulário de Notificação: [link](http://localhost:8000/form/)
-Acesso ao dashboard: [link](http://localhost:8000/dashboard/)
+Acesso ao formulário de Notificação: [link](http://localhost:3000/form/)
+Acesso ao dashboard: [link](http://localhost:3000/dashboard/)
 
 1. **Extração de Dados com Bash [X]**
    - **Descrição:** Scripts Bash para extração de dados do TCG Player.
@@ -95,10 +95,10 @@ Se a sua versão do Chrome for 127.0.6533.100, faça o download do Chrome Driver
 
 5. Inicie o container do servidor Node.js:
    ```bash
-   docker run -it --name node_server_pokemon_tcg --network my_network -p 8000:3000 pokemon-tcg-scraper-node-server
+   docker run -it --name node_server_pokemon_tcg --network my_network -p 3000:3000 pokemon-tcg-scraper-node-server
    ```
 
 6. Abra outro terminal e inicie o container do servidor Python. É de extrema importância que utilize o parâmetro `-v` para criar um bind entre as pastas `dirty_data` do container e da sua máquina, coloque o caminho para o diretório `dirty_data` a direita de `:`. Exemplo (se seu SO for Windows e o seu projeto estiver na raiz do disco C): `C:/poke-card-scraper/scrape/dirty_data`.
    ```bash
-   docker run -it -p 6000:5001 -v C:/poke-card-scraper/scrape/dirty_data:/app/server/dirty_data --network my_network --name data-cleaning-server data-cleaning-server-python
+   docker run -it -p 5001:5001 -v C:/poke-card-scraper/scrape/dirty_data:/app/server/dirty_data --network my_network --name data-cleaning-server data-cleaning-server-python
    ```

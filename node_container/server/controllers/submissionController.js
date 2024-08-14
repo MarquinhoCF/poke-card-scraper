@@ -21,7 +21,7 @@ exports.notify = (req, res) => {
   const formData = req.body;
   saveSubmission(formData)
     .then(
-      () => res.status(200).json({ message: 'Formulário recebido com sucesso' })
+      (msg) => res.status(200).json({ message: msg })
     ).catch(
       (err) => res.status(500).json({ error: err.message })
     );

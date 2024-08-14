@@ -16,8 +16,8 @@ const loadSubmissionQueue = () => {
 let submissionQueue = loadSubmissionQueue();
 
 // Tarefa cron para processar as notificações
-cron.schedule('*/10 * * * *', () => {
-  console.log('Executando tarefa cron a cada 10 minutos');
+cron.schedule('0 0 * * *', () => {
+  console.log('Executando tarefa cron a cada 24 horas');
 
   // Recarrega a fila de submissões antes de processar
   submissionQueue = loadSubmissionQueue();

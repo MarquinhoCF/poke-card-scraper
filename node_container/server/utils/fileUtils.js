@@ -4,27 +4,32 @@ const { dataDir, submitsPath } = require('../config/env');
 
 exports.saveSubmission = (formData) => {
   return fs.ensureDir(path.dirname(submitsPath))
-  .then(
-    () => fs.pathExists(submitsPath)
-  ).then(
-    (exists) => exists ? fs.readJson(submitsPath) : []
-  ).then(
-    (submits) => {
-      // Verifica se já existe um registro com o mesmo nome de usuário, email e telefone
-      const isDuplicate = submits.some(submit => 
-        submit.userName === formData.userName &&
-        submit.email === formData.email &&
-        submit.phone === formData.phone
+    .then(() => fs.pathExists(submitsPath))
+    .then((exists) => exists ? fs.readJson(submitsPath) : [])
+    .then((submits) => {
+      // Verifica se já existe um registro com o mesmo nome de usuário e (email ou telefone)
+      // Se existir ele atualiza os dados, caso contrário adiciona um novo registro
+      const existingIndex = submits.findIndex(submit => 
+        submit.userName === formData.userName 
+        && ((submit.email !== "" && submit.email === formData.email)
+        || (submit.phone !== "" && submit.phone === formData.phone))
       );
 
-      if (isDuplicate) {
-        throw new Error('Registro já existente. Tente utilizar outro nome de usuário, email ou número de telefone.');
+      let msg;
+      if (existingIndex !== -1) {
+        // Substitui o registro existente pelo novo formData
+        submits[existingIndex] = formData;
+        msg = 'Critérios para notificação atualizados com sucesso!';
+      } else {
+        // Adiciona o novo registro se não existir um duplicado
+        submits.push(formData);
+        msg = 'Critérios para notificação recebidos com sucesso!';
       }
 
-      submits.push(formData);
-      return fs.writeJson(submitsPath, submits, { spaces: 2 });
-    }
-  );
+      fs.writeJson(submitsPath, submits, { spaces: 2 })
+
+      return msg;
+    });
 };
 
 exports.updateHistory = (newData, timestamp) => {

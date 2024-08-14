@@ -1,4 +1,4 @@
-const { readHistoryData, readData } = require('../utils/fileUtils');
+const { readHistoryData, readData, getLatestTimestamp } = require('../utils/fileUtils');
 
 exports.getProduct = (req, res) => {
   const productKey = decodeURIComponent(req.params.productKey);
@@ -16,7 +16,10 @@ exports.getProduct = (req, res) => {
 
       return res.status(404).json({ message: 'Produto não encontrado' });
     })
-    .catch((err) => res.status(500).json({ error: err.message }));
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.message })
+    });
 }
 
 exports.getProducts = (req, res) => {
@@ -25,7 +28,10 @@ exports.getProducts = (req, res) => {
       const productKeys = Object.keys(historyData);
       return res.status(200).json(productKeys)
     })
-    .catch((err) => res.status(500).send(err.message));
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.message })
+    });
 };
 
 exports.getProductChartData = (req, res) => {
@@ -44,20 +50,17 @@ exports.getProductChartData = (req, res) => {
 
       res.json(chartData);
     })
-    .catch((err) => res.status(500).json({ error: err.message }));
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.message })
+    });
 };
 
 exports.getLastTimestamp = (req, res) => {
-  readData()
-    .then((jsonData) => {
-      if (!jsonData) {
-        return res.status(500).json({ message: 'Arquivo data.json não encontrado' });
-      }
-
-      return res.status(200).json({ timestamp: jsonData.timestamp });
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.status(500).json({ error: err.message })
-    });
+  try {
+    return res.status(200).json({ timestamp: getLatestTimestamp() });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
 };

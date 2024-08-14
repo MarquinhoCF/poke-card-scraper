@@ -27,6 +27,25 @@ const emailField = document.getElementById('email-field');
 const phoneField = document.getElementById('phone-field');
 const countryCodeSelect = document.getElementById('country-code');
 
+// Seletor do modal e dos elementos do modal
+const modal = document.getElementById('modal');
+const modalMessage = document.getElementById('modal-message');
+const closeButton = document.querySelector('.close-button');
+const modalContinueNotifyButton = document.getElementById('modal-continue-notify-button');
+const modalDashboardButton = document.getElementById('modal-dashboard-button');
+
+document.getElementById('logo-link').addEventListener('click', function() {
+    window.location.href = '/form';
+});
+
+document.getElementById('notification-link').addEventListener('click', function() {
+    window.location.href = '/form';
+});
+
+document.getElementById('dashboard-link').addEventListener('click', function() {
+    window.location.href = '/dashboard/';
+});
+
 // Inicializa os eventos
 document.addEventListener('DOMContentLoaded', () => {
     emailCheckbox.addEventListener('change', updateNotificationFields);
@@ -133,7 +152,7 @@ form.addEventListener('submit', (event) => {
             userName: usernameValue,
             notificationsMethods: getCheckedNotifications(),
             email: emailValue,
-            phone: phoneValue
+            phone: smsCheckbox.checked ? phoneValue : ""
         };
 
         console.log('Dados do formulário:', formData);
@@ -147,11 +166,15 @@ form.addEventListener('submit', (event) => {
         })
         .then(response => response.json())
         .then(message => {
-            console.log(message);
-            alert(message.message);
+            form.reset();
+            modalMessage.innerText = message.message;
         })
         .catch(error => {
+            modalMessage.innerText = error.message;
             console.error('Erro ao enviar formulário:', error);
+        })
+        .finally(() => {
+            showModal();
         });
     }
     updateNotificationFields();
@@ -258,3 +281,29 @@ function getCheckedNotifications() {
     if (smsCheckbox.checked) methods.push('SMS');
     return methods.join(', ');
 }
+
+// Função para mostrar o modal
+function showModal() {
+    modal.style.display = 'block';
+}
+
+// Função para fechar o modal
+function closeModal() {
+    modal.style.display = 'none';
+}
+
+// Função que redireciona ao dashboard
+function redirect2Dashboard() {
+    window.location.href = '/dashboard';
+}
+// Fechar o modal ao clicar no "X" ou no botão "OK"
+closeButton.addEventListener('click', closeModal);
+modalContinueNotifyButton.addEventListener('click', closeModal);
+modalDashboardButton.addEventListener('click', redirect2Dashboard);
+
+// Fechar o modal ao clicar fora dele
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        closeModal();
+    }
+});
