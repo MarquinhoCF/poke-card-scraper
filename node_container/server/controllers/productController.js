@@ -55,12 +55,3 @@ exports.getProductChartData = (req, res) => {
       return res.status(500).json({ error: err.message })
     });
 };
-
-exports.getLastTimestamp = (req, res) => {
-  try {
-    return res.status(200).json({ timestamp: getLatestTimestamp() });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: err.message });
-  }
-};

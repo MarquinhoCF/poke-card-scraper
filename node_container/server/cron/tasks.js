@@ -1,17 +1,6 @@
 const cron = require('node-cron');
-const fs = require('fs-extra');
-const { submitsPath } = require('../config/env');
-const { filterProducts, getLatestTimestamp } = require('../utils/fileUtils');
+const { filterProducts, getLatestTimestamp, loadSubmissionQueue } = require('../utils/fileUtils');
 const sendNotification = require('../utils/notifications');
-
-// Função para carregar a fila de submissões do arquivo
-const loadSubmissionQueue = () => {
-  if (fs.existsSync(submitsPath)) {
-    const submissionData = fs.readFileSync(submitsPath, 'utf8');
-    return JSON.parse(submissionData);
-  }
-  return [];
-};
 
 let submissionQueue = loadSubmissionQueue();
 

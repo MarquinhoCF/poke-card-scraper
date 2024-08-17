@@ -147,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: setLabels,
                 datasets: [{
+                    label: 'Ocorrências das Coleções',
                     data: setValues,
                     backgroundColor: 'rgba(75, 192, 192, 1)',
                     borderColor: 'rgba(75, 192, 192, 1)',
@@ -203,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: conditionLabels,
                 datasets: [{
+                    label: 'Ocorrências das Condições',
                     data: conditionValues,
                     backgroundColor: 'rgba(255, 159, 64, 1)',
                     borderColor: 'rgba(255, 159, 64, 1)',
@@ -343,12 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         },
                         plugins: {
                             legend: {
-                                labels: {
-                                    font: {
-                                        size: 16, // Tamanho da fonte da legenda
-                                    },
-                                    color: '#14456B', // Cor da legenda
-                                }
+                                display: false,
                             }
                         }
                     }

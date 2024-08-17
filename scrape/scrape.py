@@ -50,7 +50,7 @@ def get_page_count(driver):
 # Salva o HTML da página em um arquivo.
 def save_html(html_content, folder_path, page_num):
     try:
-        filename = os.path.join(folder_path, f'page{page_num}.html')
+        filename = os.path.join(folder_path, f'page {page_num}.html')
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(html_content)
         print(f"HTML salvo em {filename}")
@@ -62,7 +62,7 @@ def notify_server(timestamp):
     data = {"timestamp": timestamp}
     try:
         response = requests.post(url_python_server, json=data, headers=headers)
-        response.raise_for_status()  # Levanta um erro para códigos de status HTTP 4xx/5xx
+        response.raise_for_status()
         print("Notificação enviada com sucesso!")
     except requests.exceptions.RequestException as e:
         print(f"Erro ao enviar notificação: {e}")

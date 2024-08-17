@@ -26,7 +26,7 @@ async function generatePersonalizedText(submissionData, ordnedResults, timestamp
 
     prompt += `Aqui estão os detalhes dos produtos encontrados:\n`;
 
-    prompt += `A última raspagem de dados no site TCG Player foi realizada às ${formatTimestamp(timestamp)}. 
+    prompt += `A última pesquisa de dados no site TCG Player foi realizada às ${formatTimestamp(timestamp)}. 
         Inclua na mensagem quando foi realizada a última raspagem.\n`;
 
     const formatProductDetails = (product) => {

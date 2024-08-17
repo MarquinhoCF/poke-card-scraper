@@ -135,6 +135,15 @@ exports.readData = () => {
   });
 };
 
+// Função para carregar a fila de submissões do arquivo
+exports.loadSubmissionQueue = () => {
+  if (fs.existsSync(submitsPath)) {
+    const submissionData = fs.readFileSync(submitsPath, 'utf8');
+    return JSON.parse(submissionData);
+  }
+  return [];
+};
+
 exports.getLatestTimestamp = () => {
   const dataFilePath = path.join(dataDir, 'data.json');
 

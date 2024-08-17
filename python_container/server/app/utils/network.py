@@ -1,13 +1,6 @@
 import requests
 import json
 import math
-import os
-from dotenv import load_dotenv
-
-# Carregar variáveis do arquivo .env
-load_dotenv()
-
-chunk_size = int(os.getenv('CHUNK_SIZE', 10 * 1024 * 1024))
 
 def split_data_into_chunks(data, chunk_size):
     total_size = len(json.dumps(data))
